@@ -258,8 +258,12 @@ def compute_lead_scoring(
     page_url: str = "",
     user_query: str = "",
 ) -> dict[str, Any]:
-    """Return numeric ICP fit score, label, and meeting readiness."""
-    score = 0
+    """Return numeric ICP fit score, label, meeting readiness, and the
+    fit/intent/value decomposition with human-readable reasons."""
+    fit = 0
+    intent_score = 0
+    value = 0
+    reasons: list[str] = []
     text_blob = " ".join(
         part
         for part in (
@@ -278,46 +282,64 @@ def compute_lead_scoring(
 
     project_type = str(profile.get("project_type") or "unknown")
     if profile.get("project_need"):
-        score += 20
+        fit += 20
+        reasons.append("described a concrete project need (+20 fit)")
     if project_type and project_type != "unknown":
-        score += 10
+        fit += 10
+        reasons.append(f"project type identified: {project_type} (+10 fit)")
 
     timeline = str(profile.get("timeline") or "")
     if _timeline_is_urgent(timeline) or _TIMELINE_URGENT_RE.search(text_blob):
-        score += 30
+        intent_score += 30
+        reasons.append("urgent timeline (+30 intent)")
     elif _TIMELINE_MID_RE.search(timeline) or _TIMELINE_MID_RE.search(text_blob):
-        score += 15
+        intent_score += 15
+        reasons.append("near-term timeline (+15 intent)")
 
     budget = str(profile.get("budget_band") or "")
     if _BUDGET_HIGH_RE.search(budget) or _BUDGET_HIGH_RE.search(text_blob):
-        score += 30
+        value += 30
+        reasons.append("high budget signal (+30 value)")
     elif _BUDGET_MID_RE.search(budget) or _BUDGET_MID_RE.search(text_blob):
-        score += 20
+        value += 20
+        reasons.append("mid budget signal (+20 value)")
     elif _BUDGET_LOW_RE.search(budget) or _BUDGET_LOW_RE.search(text_blob):
-        score += 5
+        value += 5
+        reasons.append("low budget signal (+5 value)")
 
     role = str(profile.get("role") or "unknown")
     if role in DECISION_MAKER_ROLES:
-        score += 20
+        fit += 20
+        reasons.append(f"decision-maker role: {role} (+20 fit)")
     elif role in {"product_manager", "engineering_manager", "marketing_manager"}:
-        score += 10
+        fit += 10
+        reasons.append(f"influencer role: {role} (+10 fit)")
 
     if profile.get("email") and profile.get("name"):
-        score += 10
+        intent_score += 10
+        reasons.append("shared name and email (+10 intent)")
     elif profile.get("email"):
-        score += 5
+        intent_score += 5
+        reasons.append("shared email (+5 intent)")
 
-    if intent == "booking" or _BOOKING_RE.search(text_blob):
-        score += 20
+    booking_requested = intent == "booking" or bool(_BOOKING_RE.search(text_blob))
+    if booking_requested:
+        intent_score += 20
+        reasons.append("asked to book a call (+20 intent)")
     elif intent == "sales":
-        score += 10
+        intent_score += 10
+        reasons.append("sales-oriented conversation (+10 intent)")
 
     if _ENTERPRISE_RE.search(text_blob) or project_type in {"enterprise_software", "healthcare_fintech"}:
-        score += 5
+        value += 5
+        reasons.append("enterprise/compliance signals (+5 value)")
 
     page_cat = _page_category_from_url(page_url)
     if page_cat in _HIGH_INTENT_PAGES:
-        score += 5
+        intent_score += 5
+        reasons.append(f"browsing high-intent page: {page_cat} (+5 intent)")
+
+    score = fit + intent_score + value
 
     if intent == "help":
         if profile.get("email") and profile.get("name"):
@@ -326,6 +348,7 @@ def compute_lead_scoring(
             score = max(score, 35)
         else:
             score = min(score, 30)
+            reasons.append("help-mode conversation without contact info (capped at 30)")
 
     score = max(0, min(100, score))
 
@@ -336,7 +359,6 @@ def compute_lead_scoring(
     else:
         label = "cold"
 
-    booking_requested = intent == "booking" or bool(_BOOKING_RE.search(text_blob))
     if booking_requested:
         readiness = "booking_requested"
     elif score >= 80 or (label == "hot" and profile.get("email")):
@@ -350,7 +372,44 @@ def compute_lead_scoring(
         "lead_score_numeric": score,
         "lead_score": label,
         "meeting_readiness": readiness,
+        "qualification_score": {
+            "fit": fit,
+            "intent": intent_score,
+            "value": value,
+            "total": score,
+            "bucket": label,
+            "reasons": reasons,
+        },
     }
+
+
+# Which scoring component each qualification question feeds. Contact fields
+# (name/email/company) are deliberately absent — their position in the intent
+# field order is a capture-flow decision, not a scoring one.
+_QUAL_FIELD_COMPONENT = {
+    "project_need": "fit",
+    "timeline": "intent",
+    "budget_band": "value",
+}
+
+
+def prioritize_missing_fields(
+    missing: list[str],
+    qualification_score: dict[str, Any] | None,
+) -> list[str]:
+    """Reorder qualification fields so the weakest scoring dimension is probed
+    first (e.g. value=0 → ask budget before timeline). Contact fields keep
+    their original slots; ties keep the intent-defined order."""
+    qual = qualification_score or {}
+    scorable = [f for f in missing if f in _QUAL_FIELD_COMPONENT]
+    if len(scorable) < 2 or not qual:
+        return list(missing)
+    ranked = sorted(
+        scorable,
+        key=lambda f: int(qual.get(_QUAL_FIELD_COMPONENT[f]) or 0),
+    )
+    it = iter(ranked)
+    return [next(it) if f in _QUAL_FIELD_COMPONENT else f for f in missing]
 
 
 def requests_human(query: str) -> bool:

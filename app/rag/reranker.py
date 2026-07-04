@@ -6,6 +6,7 @@ from typing import Any
 import httpx
 
 from app.agent.page_context import urls_match
+from app.agent.retrieval_plan import PRICING_PREFERRED_SLUGS
 from app.config.settings import get_settings
 
 logger = logging.getLogger(__name__)
@@ -103,7 +104,9 @@ def _heuristic_rerank(
         source_url = str(item.get("source_url") or "").lower()
         if "case stud" in query_lower and "/case-stud" in source_url:
             boost += 0.20
-        if "pric" in query_lower and "capabilities-overview" in source_url:
+        if "pric" in query_lower and any(
+            slug in source_url for slug in PRICING_PREFERRED_SLUGS
+        ):
             boost += 0.18
         if category == "blog" and any(
             token in query_lower for token in ("case stud", "pric", "pricing", "cost")

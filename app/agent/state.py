@@ -16,6 +16,15 @@ class LeadProfile(TypedDict, total=False):
     decision_maker: bool
 
 
+class QualificationScore(TypedDict, total=False):
+    fit: int  # ICP fit: project need/type, role seniority
+    intent: int  # urgency + engagement: timeline, booking asks, contact shared
+    value: int  # deal-size signals: budget band, enterprise/compliance
+    total: int  # 0–100, clamped; source of lead_score_numeric
+    bucket: str  # hot | warm | cold
+    reasons: list[str]
+
+
 class Citation(TypedDict, total=False):
     chunk_id: str
     page_title: str
@@ -38,6 +47,10 @@ class AgentState(TypedDict, total=False):
     lead_score: str  # hot | warm | cold
     lead_score_numeric: int
     meeting_readiness: str  # not_ready | maybe_ready | ready | booking_requested
+    qualification_score: QualificationScore
+    cta_type: str  # instant_booking | qualify | human_handoff | educate
+    needs_human_review: bool
+    human_review_summary: str
 
     lead_profile: dict[str, Any]
     missing_fields: list[str]
@@ -91,6 +104,12 @@ def default_state(
         lead_score="cold",
         lead_score_numeric=0,
         meeting_readiness="not_ready",
+        qualification_score=QualificationScore(
+            fit=0, intent=0, value=0, total=0, bucket="cold", reasons=[]
+        ),
+        cta_type="educate",
+        needs_human_review=False,
+        human_review_summary="",
         missing_fields=[],
         profile_question="",
         needs_contact_info=False,

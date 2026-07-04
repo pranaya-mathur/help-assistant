@@ -112,6 +112,8 @@ class ChatResponse(BaseModel):
     grounding_rewritten: bool = False
     suggested_replies: list[str] = Field(default_factory=list)
     show_human_escalation: bool = False
+    lead_bucket: Optional[str] = None  # hot | warm | cold
+    cta_type: Optional[str] = None  # instant_booking | qualify | human_handoff | educate
 
 
 class EscalateRequest(BaseModel):
@@ -133,6 +135,7 @@ AnalyticsEventType = Literal[
     "widget_opened",
     "widget_opened_no_message",
     "cta_clicked",
+    "cta_shown",
     "message_sent",
     "qualify_shown",
     "qualify_submitted",

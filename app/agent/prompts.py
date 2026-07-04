@@ -208,6 +208,7 @@ def format_answer_user_prompt(
     current_page_chunks: list[dict[str, Any]] | None = None,
     session_context: dict[str, Any] | None = None,
     frustrated: bool = False,
+    lead_bucket: str = "",
 ) -> str:
     closing = _closing_instruction(
         stage,
@@ -253,7 +254,31 @@ def format_answer_user_prompt(
             contact_page_url=contact_page_url,
             calendly_url=calendly_url,
         )
+    tone = _BUCKET_TONE.get(lead_bucket, "")
+    if tone and not frustrated:
+        mode += f"\nTone: {tone}"
     return header + structure + mode + "\n\nWrite the reply:"
+
+
+# Tone escalates with buying signals (see compute_lead_scoring buckets):
+# educational for cold, consultative for warm, direct for hot. Frustrated
+# visitors keep the dedicated de-escalation instruction instead.
+_BUCKET_TONE = {
+    "hot": (
+        "This visitor shows strong buying signals. Be consultative and direct — "
+        "reference their stated project, timeline, or budget where relevant, and "
+        "make the next step feel natural. Confident, never pushy."
+    ),
+    "warm": (
+        "This visitor shows moderate buying signals. Be consultative: tie the "
+        "answer back to their stated project where possible and keep momentum "
+        "with concrete specifics."
+    ),
+    "cold": (
+        "This visitor is early-stage. Be purely educational and generous with "
+        "information — no sales pressure."
+    ),
+}
 
 
 _HELP_MODE_RULES = """

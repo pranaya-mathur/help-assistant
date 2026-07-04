@@ -1553,8 +1553,11 @@
       bookBanner.classList.remove("show");
     }
 
-    function showBookBanner(show) {
-      if (hasKnownLead()) return;
+    function showBookBanner(show, force) {
+      /* `force` (instant_booking CTA): a hot lead we already know is exactly
+         who should see the booking button — skip the known-lead suppression
+         but still honour an explicit dismissal. */
+      if (!force && hasKnownLead()) return;
       try {
         if (localStorage.getItem(STORAGE_DISMISS_BOOK)) return;
       } catch (e) {}
@@ -1666,16 +1669,29 @@
         if (lp.email && lp.name) suppressProactive();
       }
       var cits = renderSources(data.citations);
-      if (cits) bubble.appendChild(cits);
-      renderMetaPills(data.stage, data.lead_score, bubble);
+      if (cits && bubble) bubble.appendChild(cits);
+      if (bubble) renderMetaPills(data.stage, data.lead_score, bubble);
       showSuggestions(data.suggested_replies);
-      if (data.ready_for_booking && !hasKnownLead()) {
+      var cta = data.cta_type || "";
+      if (cta === "instant_booking") {
+        /* Hot lead ready to book — surface the booking banner regardless of
+           whether we already know them; a button converts better than a link
+           buried in the answer text. */
+        suppressProactive();
+        showBookBanner(true, true);
+        track("cta_shown", "instant_booking");
+      } else if (data.ready_for_booking && !hasKnownLead()) {
         suppressProactive();
         showBookBanner(true);
       } else if (!data.ready_for_booking) {
         showBookBanner(false);
       }
-      if (data.show_human_escalation) {
+      if (cta === "human_handoff") {
+        /* Visitor asked for a person (or is frustrated) — open the escalation
+           form directly instead of hiding the path behind a chip. */
+        showEscalateForm(true);
+        track("cta_shown", "human_handoff");
+      } else if (data.show_human_escalation) {
         var chips = (data.suggested_replies || []).slice();
         if (chips.indexOf("Talk to our team") < 0) chips.push("Talk to our team");
         showSuggestions(chips);
@@ -1748,7 +1764,7 @@
           data = null; // already handled
         }
 
-        if (data) handleData(data, document.querySelector("#mc-messages .mc-row.bot:last-of-type .mc-bubble"));
+        if (data) handleData(data, parts2 ? parts2.bubble : null);
       } catch (e) {
         setTyping(false);
         var stale = messages.querySelector(".mc-streaming");
@@ -1813,7 +1829,9 @@
             setTyping(false); firstToken = false; bubble.style.display = "";
             content.innerHTML = renderBot(fullText);
             messages.scrollTop = messages.scrollHeight;
-            meta = ev;
+            /* The meta event arrives before done — merge rather than clobber
+               so cta_type / suggested_replies / citations survive. */
+            meta = Object.assign({}, meta || {}, ev);
           } else if (ev.type === "meta" && ev.data) {
             meta = ev.data;
             if (ev.data.session_id) localStorage.setItem(STORAGE_SESSION, ev.data.session_id);

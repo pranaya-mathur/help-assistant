@@ -59,7 +59,7 @@ def test_case_study_filter_drops_blog_posts():
     assert "https://mobcoder.ai/case-studies/gov-gig" in urls
 
 
-def test_pricing_filter_prefers_capabilities_overview():
+def test_pricing_filter_prefers_engagement_model_pages():
     plan = RetrievalPlan(
         search_query="pricing",
         page_category="ai_agents",
@@ -69,8 +69,10 @@ def test_pricing_filter_prefers_capabilities_overview():
     )
     chunks = [
         {"source_url": "https://mobcoder.ai/blog/pricing-tips"},
-        {"source_url": "https://mobcoder.ai/generative-ai-development-services"},
+        {"source_url": "https://mobcoder.ai/about-us"},
         {"source_url": "https://mobcoder.ai/generative-ai-development-services"},
     ]
     filtered = _filter_retrieved_chunks(chunks, plan)
-    assert "capabilities-overview" in filtered[0]["source_url"]
+    urls = [c["source_url"] for c in filtered]
+    assert "https://mobcoder.ai/blog/pricing-tips" not in urls
+    assert "generative-ai-development-services" in filtered[0]["source_url"]

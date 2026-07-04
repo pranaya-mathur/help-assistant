@@ -138,6 +138,13 @@ def main() -> None:
     chunks = chunk_pages(pages, deduplicate=True)
     logger.info(f"Produced {len(chunks)} chunks")
 
+    from app.agent.retrieval_plan import check_retrieval_slug_dependencies
+
+    for warning in check_retrieval_slug_dependencies(
+        [getattr(c, "source_url", "") for c in chunks]
+    ):
+        logger.warning("CRAWL DRIFT: %s", warning)
+
     if args.dry_run:
         print(f"Dry run: would ingest {len(chunks)} chunks")
         return

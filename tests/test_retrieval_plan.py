@@ -42,11 +42,12 @@ def test_case_study_query_routes_to_portfolio():
     assert "nap detect" in plan.search_query.lower()
 
 
-def test_pricing_query_targets_capabilities_overview():
+def test_pricing_query_targets_engagement_model_content():
     plan = resolve_retrieval_plan(user_query="What about the Pricing?")
     assert plan.page_category == "ai_agents"
     assert plan.prompt_page_category == "pricing"
-    assert "capabilities-overview" in plan.search_query.lower()
+    assert "engagement models" in plan.search_query.lower()
+    assert "pricing quote" in plan.search_query.lower()
 
 
 def test_pricing_query_does_not_expand_rag():

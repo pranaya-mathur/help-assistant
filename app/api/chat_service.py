@@ -14,7 +14,10 @@ import asyncio
 from app.agent.graph import run_agent
 from app.agent.lead_extractor import count_user_turns, has_contact_capture, merge_profiles
 from app.agent.stream_runner import run_agent_stream_events
-from app.agent.post_response import dispatch_post_response_enrichment
+from app.agent.post_response import (
+    dispatch_post_response_enrichment,
+    dispatch_qualification_persistence,
+)
 from app.api.attribution import (
     persist_client_ip,
     persist_user_agent,
@@ -378,6 +381,8 @@ def state_to_response(
         grounding_rewritten=bool(state.get("grounding_rewritten", False)),
         suggested_replies=list(state.get("suggested_replies") or []),
         show_human_escalation=bool(state.get("show_human_escalation", False)),
+        lead_bucket=(str(state.get("lead_score") or "") or None) if expose_internal_sales_metadata else None,
+        cta_type=str(state.get("cta_type") or "") or None,
     )
 
 
@@ -783,6 +788,12 @@ def process_chat(request: ChatRequest, *, user_agent: str = "") -> ChatResponse:
         streaming=False,
         latency_ms=(time.perf_counter() - started) * 1000,
     )
+    # run_agent already enriched this state synchronously — persist the
+    # qualification/routing outcome and fire alerts off the response path.
+    dispatch_qualification_persistence(
+        state={**state, "lead_consent": bool(request.lead_consent)},
+        session_id=session_id,
+    )
 
     expose_internal = (
         get_settings().expose_internal_sales_metadata
@@ -904,7 +915,10 @@ async def stream_chat(request: ChatRequest, *, user_agent: str = "") -> AsyncIte
             streaming=True,
             latency_ms=(time.perf_counter() - started) * 1000,
         )
-        dispatch_post_response_enrichment(state=final_state, session_id=session_id)
+        dispatch_post_response_enrichment(
+            state={**final_state, "lead_consent": bool(request.lead_consent)},
+            session_id=session_id,
+        )
 
     yield "data: [DONE]\n\n"
 

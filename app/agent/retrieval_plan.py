@@ -51,6 +51,38 @@ _TOPIC_RULES: list[tuple[str, re.Pattern[str]]] = [
     ("pricing", re.compile(r"\b(pricing|price|cost|budget|quote|how much)\b", re.I)),
 ]
 
+# Pages whose chunks carry engagement-model/pricing language. The old
+# /services/ai-capabilities-overview page was replaced by
+# /generative-ai-development-services on the live site; keep both slugs so a
+# re-published page is still preferred.
+PRICING_PREFERRED_SLUGS = ("capabilities-overview", "generative-ai-development-services")
+
+# URL fragments that retrieval heuristics depend on (chunk filters in
+# nodes._filter_retrieved_chunks, boosts in rag.reranker). If a site redesign
+# renames these pages, the heuristics silently stop firing — the ingest
+# pipeline checks each group still matches at least one crawled URL and warns
+# otherwise. Register any new hardcoded slug here.
+RETRIEVAL_SLUG_DEPENDENCIES: dict[str, tuple[str, ...]] = {
+    "pricing_preferred_pages": PRICING_PREFERRED_SLUGS,
+    "case_study_pages": ("/case-stud",),
+}
+
+
+def check_retrieval_slug_dependencies(source_urls: list[str]) -> list[str]:
+    """Return a warning per dependency group with no matching crawled URL."""
+    urls = [str(u or "").lower() for u in source_urls]
+    warnings: list[str] = []
+    for group, slugs in RETRIEVAL_SLUG_DEPENDENCIES.items():
+        if not any(slug in url for url in urls for slug in slugs):
+            warnings.append(
+                f"Retrieval heuristic '{group}' matches no crawled URL "
+                f"(expected one of: {', '.join(slugs)}). The related chunk "
+                "filter/rerank boost is now a no-op — the site page was likely "
+                "renamed or removed. Update RETRIEVAL_SLUG_DEPENDENCIES in "
+                "app/agent/retrieval_plan.py."
+            )
+    return warnings
+
 
 @dataclass(frozen=True)
 class RetrievalPlan:
@@ -122,7 +154,7 @@ def resolve_retrieval_plan(
     page_category = topic
     prompt_page_category = topic
     if topic == "pricing":
-        # Capabilities overview (ai_agents) holds engagement/pricing language.
+        # The generative-AI services page (ai_agents) holds engagement/pricing language.
         page_category = "ai_agents"
         prompt_page_category = "pricing"
         search_query = f"{normalized} generative ai agentic capabilities engagement models pricing quote".strip()

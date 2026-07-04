@@ -135,6 +135,16 @@ class Settings(BaseSettings):
         description="Secret key for internal read-only endpoints (GET /feedback*). Set a long random string in prod.",
     )
     hubspot_webhook_url: Optional[str] = None
+    google_chat_webhook_url: Optional[str] = Field(
+        default=None,
+        validation_alias="GOOGLE_CHAT_WEBHOOK_URL",
+        description="Google Chat space incoming webhook for human-review lead alerts.",
+    )
+    google_sheets_webhook_url: Optional[str] = Field(
+        default=None,
+        validation_alias="GOOGLE_SHEETS_WEBHOOK_URL",
+        description="Apps Script web-app URL that upserts qualified-lead rows into the lead-log Google Sheet.",
+    )
     apollo_api_key: Optional[str] = None
     apollo_ip_enrichment_enabled: bool = Field(
         default=False,

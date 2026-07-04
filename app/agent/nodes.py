@@ -24,6 +24,7 @@ from app.agent.intent_classifier import _is_booking_intent, classify_with_histor
 from app.agent.lead_intelligence import (
     compute_lead_scoring,
     is_frustrated,
+    prioritize_missing_fields,
     requests_human,
     should_offer_human_escalation,
 )
@@ -52,7 +53,8 @@ from app.config.settings import get_settings
 from app.crawler.page_loader import infer_page_category
 from app.crawler.schema import ALLOWED_DOMAINS
 from app.integrations.apollo import enrich_lead_hint_sync
-from app.agent.retrieval_plan import resolve_retrieval_plan
+from app.agent.retrieval_plan import PRICING_PREFERRED_SLUGS, resolve_retrieval_plan
+from app.agent.routing import decide_routing
 from app.rag.reranker import rerank_chunks
 from app.rag.retriever import get_retriever
 
@@ -91,7 +93,10 @@ def _filter_retrieved_chunks(
         preferred = [
             c
             for c in filtered
-            if "capabilities-overview" in str(c.get("source_url") or "").lower()
+            if any(
+                slug in str(c.get("source_url") or "").lower()
+                for slug in PRICING_PREFERRED_SLUGS
+            )
         ]
         if preferred:
             rest = [c for c in filtered if c not in preferred]
@@ -361,6 +366,11 @@ def _answer_user_prompt_from_state(state: dict[str, Any], context: str) -> str:
         current_page_chunks=list(state.get("current_page_chunks") or []),
         session_context=dict(state.get("session_context") or {}),
         frustrated=is_frustrated(str(state.get("user_query") or "")),
+        # Scoring lands in state only after the graph — recompute the cheap
+        # rule-only bucket here so answer tone tracks this turn's signals.
+        lead_bucket=str(
+            _apply_lead_scoring(state, profile, str(state.get("intent") or ""))["lead_score"]
+        ),
     )
     # For referential follow-ups, hard-instruct the LLM to stay on the prior topic.
     query = str(state.get("user_query") or "")
@@ -555,6 +565,7 @@ def classify_intent(state: dict[str, Any]) -> dict[str, Any]:
         "lead_score": scoring["lead_score"],
         "lead_score_numeric": scoring["lead_score_numeric"],
         "meeting_readiness": scoring["meeting_readiness"],
+        "qualification_score": scoring["qualification_score"],
     }
 
 
@@ -628,6 +639,7 @@ def update_lead_profile(state: dict[str, Any]) -> dict[str, Any]:
         "lead_score": scoring["lead_score"],
         "lead_score_numeric": scoring["lead_score_numeric"],
         "meeting_readiness": scoring["meeting_readiness"],
+        "qualification_score": scoring["qualification_score"],
     }
 
 
@@ -745,6 +757,14 @@ def append_qualification(state: dict[str, Any]) -> dict[str, Any]:
 
     if not missing:
         return {**state, "answer": answer, "needs_contact_info": False}
+
+    # Probe the weakest scoring dimension first: a lead with no value signal
+    # gets the budget question before the timeline one, etc. Recompute the
+    # rule-only score here — state carries the previous turn's numbers.
+    missing = prioritize_missing_fields(
+        missing,
+        _apply_lead_scoring(state, profile, intent)["qualification_score"],
+    )
 
     # Layer 4: Use progressive contextual question instead of cold interrogation.
     # next_progressive_question picks a variant tuned to intent + project_type so
@@ -1006,9 +1026,21 @@ def build_final_response(state: dict[str, Any]) -> dict[str, Any]:
             llm_json_fn=_llm_json,
         )
     suggestions = merge_suggested_replies(heuristic, llm_chips)
+    # Scoring normally lands via enrich_state *after* the graph finishes, so
+    # recompute the rule-only score here — routing must see this turn's
+    # booking/budget/urgency signals, not the previous turn's defaults.
+    state = {**state, **_apply_lead_scoring(state, profile, intent)}
+    routing = decide_routing(state)
+    if routing.get("needs_human_review"):
+        logger.info(
+            "human review flagged request_id=%s\n%s",
+            state.get("request_id", ""),
+            routing.get("human_review_summary", ""),
+        )
 
     return {
         **state,
+        **routing,
         "final_response": answer,
         "citations": citations,
         "suggested_replies": suggestions,
