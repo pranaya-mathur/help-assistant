@@ -1,0 +1,50 @@
+name: Weekly MobCoder crawl and ingest
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  crawl-ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Crawl mobcoder.ai
+        env:
+          APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CRAWL_MAX_PAGES_PER_SEED: "500"
+        run: python scripts/crawl_mobcoder.py --use-sitemap --max-pages 500
+
+      - name: Fail if zero pages
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          p = Path("data/formatted/pages_latest.json")
+          if not p.exists():
+              print("No formatted pages output")
+              sys.exit(1)
+          pages = json.loads(p.read_text())
+          if len(pages) == 0:
+              print("Crawl returned 0 pages — check robots or seeds")
+              sys.exit(1)
+          print(f"OK: {len(pages)} pages")
+          PY
+
+      - name: Ingest into Chroma
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/ingest.py
+
+      - name: Build knowledge markdown
+        run: python scripts/build_knowledge_md.py

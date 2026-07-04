@@ -1,0 +1,4237 @@
+{
+  "mode": "offline_local_chunks",
+  "chunk_snapshot": "/Users/mobcoderid-296/Desktop/mobcoder.ai-agent-dev/data/chunks/chunks_1783134938.json",
+  "query_set": "/Users/mobcoderid-296/Desktop/mobcoder.ai-agent-dev/data/evals/retrieval_queries.json",
+  "summary": {
+    "query_count": 25,
+    "vector_top1_hit_rate": 0.88,
+    "vector_top3_hit_rate": 1.0,
+    "vector_top5_hit_rate": 1.0,
+    "hybrid_top1_hit_rate": 0.96,
+    "hybrid_top3_hit_rate": 1.0,
+    "hybrid_top5_hit_rate": 1.0,
+    "exact_keyword_recall_delta": 0.0,
+    "average_latency_vector_ms": 106.78797832457349,
+    "average_latency_hybrid_ms": 5.129926525987685,
+    "hybrid_latency_overhead_ms": -101.6580517985858,
+    "average_source_diversity_vector_top5": 4.4,
+    "average_source_diversity_hybrid_top5": 3.88,
+    "queries_improved": [
+      "api_integration_012",
+      "llm_guardrails_019",
+      "pilot_supply_chain_copilot"
+    ],
+    "queries_regressed": [],
+    "queries_same": [
+      "ai_rag_001",
+      "rag_typo_pilot",
+      "ai_agentic_002",
+      "healthcare_hipaa_003",
+      "healthcare_app_004",
+      "fintech_005",
+      "mobile_flutter_006",
+      "mobile_react_native_007",
+      "web_app_008",
+      "enterprise_009",
+      "staff_aug_010",
+      "dedicated_devs_011",
+      "cloud_devops_013",
+      "case_studies_014",
+      "discovery_call_015",
+      "pricing_016",
+      "maintenance_017",
+      "sales_bot_018",
+      "ai_process_020",
+      "rag_typo_021",
+      "pilot_case_studies",
+      "pilot_pricing"
+    ],
+    "fallback_count": 0,
+    "metadata_loss_queries": [],
+    "quality_gates": {
+      "top5_non_regression": true,
+      "top3_non_regression": true,
+      "improves_20_percent_exact_queries": false,
+      "regressions_not_greater_than_improvements": true,
+      "latency_overhead_under_150ms": true,
+      "metadata_preserved": true,
+      "fallback_zero": true
+    },
+    "recommendation": "tune hybrid before staging",
+    "url_target_pass_rate": 1.0,
+    "url_target_gate_pass": true
+  },
+  "rows": [
+    {
+      "id": "ai_rag_001",
+      "query": "Can MobCoder build a RAG chatbot for internal documents?",
+      "expected_keywords_any": [
+        "rag",
+        "chatbot",
+        "internal documents",
+        "ai"
+      ],
+      "expected_source_url_contains_any": [
+        "/ai",
+        "/services",
+        "/agent",
+        "/rag"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver",
+        "in-sydney"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 127.6383749791421,
+        "source_diversity_top5": 3,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0000",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.17562699855591385,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a256a263e753_0002",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.15828382009499872,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.10140917171106323,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0388ce6e948b_0000",
+            "source_url": "https://mobcoder.ai/services/conversational-ai-platform",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.11314228573687056,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a256a263e753_0000",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.1580766849226666,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 14.45454201893881,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0000",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 11.194831029526993
+          },
+          {
+            "chunk_id": "caed73bc0b55_0001",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.0315136476426799,
+            "rrf_score": 0.0315136476426799,
+            "bm25_score": 9.166463859853442
+          },
+          {
+            "chunk_id": "a256a263e753_0001",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03125,
+            "rrf_score": 0.03125,
+            "bm25_score": 5.998738580960101
+          },
+          {
+            "chunk_id": "0388ce6e948b_0000",
+            "source_url": "https://mobcoder.ai/services/conversational-ai-platform",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030798389007344232,
+            "rrf_score": 0.030798389007344232,
+            "bm25_score": 6.483292414416871
+          },
+          {
+            "chunk_id": "caed73bc0b55_0003",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03007688828584351,
+            "rrf_score": 0.03007688828584351,
+            "bm25_score": 4.552118071445288
+          }
+        ]
+      }
+    },
+    {
+      "id": "rag_typo_pilot",
+      "query": "I am lookin a soultion based out of RAG",
+      "expected_keywords_any": [
+        "rag",
+        "ai",
+        "solution",
+        "retrieval"
+      ],
+      "expected_source_url_contains_any": [
+        "/ai",
+        "/services",
+        "/agent",
+        "/rag"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver",
+        "in-sydney"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 125.85412501357496,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "73c1e8291837_0002",
+            "source_url": "https://mobcoder.ai/services/ai-data-analytics",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07407492396839256,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0001",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.041086861357384714,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.04130168600881429,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "caed73bc0b55_0003",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0705698301335857,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "2cf242b69794_0001",
+            "source_url": "https://mobcoder.ai/fintech-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.05629761454869847,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.635457965079695,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "73c1e8291837_0002",
+            "source_url": "https://mobcoder.ai/services/ai-data-analytics",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.032018442622950824,
+            "rrf_score": 0.032018442622950824,
+            "bm25_score": 4.9912412201383445
+          },
+          {
+            "chunk_id": "caed73bc0b55_0001",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03200204813108039,
+            "rrf_score": 0.03200204813108039,
+            "bm25_score": 6.22780337458348
+          },
+          {
+            "chunk_id": "2cf242b69794_0001",
+            "source_url": "https://mobcoder.ai/fintech-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03177805800756621,
+            "rrf_score": 0.03177805800756621,
+            "bm25_score": 6.808795053245124
+          },
+          {
+            "chunk_id": "caed73bc0b55_0003",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03128054740957967,
+            "rrf_score": 0.03128054740957967,
+            "bm25_score": 4.717510060126507
+          },
+          {
+            "chunk_id": "240af0710a17_0002",
+            "source_url": "https://mobcoder.ai/services/custom-ai-solutions",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031024531024531024,
+            "rrf_score": 0.031024531024531024,
+            "bm25_score": 5.138792490824686
+          }
+        ]
+      }
+    },
+    {
+      "id": "ai_agentic_002",
+      "query": "Do you work with LangGraph or agentic AI?",
+      "expected_keywords_any": [
+        "langgraph",
+        "agentic",
+        "ai agent",
+        "agents"
+      ],
+      "expected_source_url_contains_any": [
+        "/ai",
+        "/services",
+        "/agent"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 134.9739590077661,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "1f5cf6f390ff_0000",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.2333368127261596,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.19825957408591655,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a256a263e753_0002",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.10873025337577581,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "73c1e8291837_0002",
+            "source_url": "https://mobcoder.ai/services/ai-data-analytics",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.15691508896202114,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.13874956573564184,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.685958000365645,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "1f5cf6f390ff_0000",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 5.529405683680207
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0001",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03177805800756621,
+            "rrf_score": 0.03177805800756621,
+            "bm25_score": 7.910769412229163
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03149801587301587,
+            "rrf_score": 0.03149801587301587,
+            "bm25_score": 5.219245164020936
+          },
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03128054740957967,
+            "rrf_score": 0.03128054740957967,
+            "bm25_score": 4.4696011585477455
+          },
+          {
+            "chunk_id": "240af0710a17_0002",
+            "source_url": "https://mobcoder.ai/services/custom-ai-solutions",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030536130536130537,
+            "rrf_score": 0.030536130536130537,
+            "bm25_score": 4.571996753497617
+          }
+        ]
+      }
+    },
+    {
+      "id": "healthcare_hipaa_003",
+      "query": "Do you build HIPAA compliant healthcare AI?",
+      "expected_keywords_any": [
+        "hipaa",
+        "healthcare",
+        "compliant",
+        "ai"
+      ],
+      "expected_source_url_contains_any": [
+        "/ai",
+        "/health",
+        "/services"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 98.84574997704476,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08977456635520215,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.02037047349826003,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.050256960766444266,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0000",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08253611214928136,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.06549613851755406,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.511875005438924,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.032266458495966696,
+            "rrf_score": 0.032266458495966696,
+            "bm25_score": 5.248180364342375
+          },
+          {
+            "chunk_id": "f707b6f33e29_0001",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03225806451612903,
+            "rrf_score": 0.03225806451612903,
+            "bm25_score": 5.629940025534444
+          },
+          {
+            "chunk_id": "2326359d4765_0000",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.032018442622950824,
+            "rrf_score": 0.032018442622950824,
+            "bm25_score": 6.303033455175236
+          },
+          {
+            "chunk_id": "1eebbd249b32_0001",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031009615384615385,
+            "rrf_score": 0.031009615384615385,
+            "bm25_score": 5.168935495741255
+          },
+          {
+            "chunk_id": "f707b6f33e29_0000",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030536130536130537,
+            "rrf_score": 0.030536130536130537,
+            "bm25_score": 4.28465576105808
+          }
+        ]
+      }
+    },
+    {
+      "id": "healthcare_app_004",
+      "query": "Can MobCoder help with healthcare software development?",
+      "expected_keywords_any": [
+        "healthcare",
+        "software",
+        "development",
+        "app"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "/health",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 98.77062501618639,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.1556595598133739,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0000",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.11660497604863708,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.055053287578113855,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0000",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0593116289561956,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0959804725344092,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.5049580144695938,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 6.045161930762317
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.032266458495966696,
+            "rrf_score": 0.032266458495966696,
+            "bm25_score": 5.1969192537360716
+          },
+          {
+            "chunk_id": "f707b6f33e29_0001",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031754032258064516,
+            "rrf_score": 0.031754032258064516,
+            "bm25_score": 5.332235497684794
+          },
+          {
+            "chunk_id": "1eebbd249b32_0001",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03149801587301587,
+            "rrf_score": 0.03149801587301587,
+            "bm25_score": 5.049053497379981
+          },
+          {
+            "chunk_id": "46a64341ab45_0000",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030536130536130537,
+            "rrf_score": 0.030536130536130537,
+            "bm25_score": 4.7044011664232395
+          }
+        ]
+      }
+    },
+    {
+      "id": "fintech_005",
+      "query": "Do you build fintech apps?",
+      "expected_keywords_any": [
+        "fintech",
+        "financial",
+        "app",
+        "software"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "/fintech",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 98.90641598030925,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.09143331279952185,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.04814042370191069,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07384605611602667,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.03418290982569331,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.5126670370809734,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 7.039068920978683
+          },
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03225806451612903,
+            "rrf_score": 0.03225806451612903,
+            "bm25_score": 5.436240251092489
+          },
+          {
+            "chunk_id": "f707b6f33e29_0001",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031746031746031744,
+            "rrf_score": 0.031746031746031744,
+            "bm25_score": 4.657374705329934
+          },
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03125,
+            "rrf_score": 0.03125,
+            "bm25_score": 3.7076086135470727
+          },
+          {
+            "chunk_id": "1eebbd249b32_0001",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030536130536130537,
+            "rrf_score": 0.030536130536130537,
+            "bm25_score": 3.6428083422986477
+          }
+        ]
+      }
+    },
+    {
+      "id": "mobile_flutter_006",
+      "query": "Do you have experience with Flutter mobile apps?",
+      "expected_keywords_any": [
+        "flutter",
+        "mobile",
+        "app",
+        "apps"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "/mobile",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 98.69408298982307,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.09877505949810265,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.035467176306272226,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.007392219403516263,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0000",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.02363873232450413,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0001",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.028312857272247992,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.6486249989829957,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 7.7964876614084035
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 5.34057176365204
+          },
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031746031746031744,
+            "rrf_score": 0.031746031746031744,
+            "bm25_score": 5.03732655039429
+          },
+          {
+            "chunk_id": "46a64341ab45_0000",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030776515151515152,
+            "rrf_score": 0.030776515151515152,
+            "bm25_score": 4.107615819057558
+          },
+          {
+            "chunk_id": "f707b6f33e29_0000",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03055037313432836,
+            "rrf_score": 0.03055037313432836,
+            "bm25_score": 3.3596188694735383
+          }
+        ]
+      }
+    },
+    {
+      "id": "mobile_react_native_007",
+      "query": "Can I hire dedicated React Native developers?",
+      "expected_keywords_any": [
+        "react native",
+        "dedicated",
+        "developers",
+        "mobile"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "/mobile",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 100.18887504702434,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0002",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.22972442977017238,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08494510320707488,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.03213630262341081,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.22848757144425086,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.011838863160693863,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.535084029659629,
+        "source_diversity_top5": 3,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 11.392330486210161
+          },
+          {
+            "chunk_id": "0d457caa10e0_0002",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 9.789948836097569
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031746031746031744,
+            "rrf_score": 0.031746031746031744,
+            "bm25_score": 5.671224364969907
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03125,
+            "rrf_score": 0.03125,
+            "bm25_score": 2.973404624817382
+          },
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03076923076923077,
+            "rrf_score": 0.03076923076923077,
+            "bm25_score": 2.8391520276355946
+          }
+        ]
+      }
+    },
+    {
+      "id": "web_app_008",
+      "query": "Can MobCoder build a web app for my business?",
+      "expected_keywords_any": [
+        "web",
+        "app",
+        "business",
+        "development"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "/web",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 99.16537499520928,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.13413172344101434,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08878366850641341,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.09149425062021106,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0778334497078295,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0001",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08575720672605475,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.5652500335127115,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.032266458495966696,
+            "rrf_score": 0.032266458495966696,
+            "bm25_score": 7.073002988958709
+          },
+          {
+            "chunk_id": "f707b6f33e29_0001",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03225806451612903,
+            "rrf_score": 0.03225806451612903,
+            "bm25_score": 7.010626619026208
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.032018442622950824,
+            "rrf_score": 0.032018442622950824,
+            "bm25_score": 6.223470470769337
+          },
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031024531024531024,
+            "rrf_score": 0.031024531024531024,
+            "bm25_score": 6.897575033907
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03055037313432836,
+            "rrf_score": 0.03055037313432836,
+            "bm25_score": 3.9105936882810672
+          }
+        ]
+      }
+    },
+    {
+      "id": "enterprise_009",
+      "query": "Do you build enterprise software platforms?",
+      "expected_keywords_any": [
+        "enterprise",
+        "software",
+        "platform",
+        "development"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 98.86529203504324,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.09204646365222698,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.04764086115978298,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08145874623458663,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.05356006839569036,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.5250419857911766,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 7.29809422670715
+          },
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03200204813108039,
+            "rrf_score": 0.03200204813108039,
+            "bm25_score": 6.101711023342906
+          },
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031754032258064516,
+            "rrf_score": 0.031754032258064516,
+            "bm25_score": 5.235717704720226
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03125763125763126,
+            "rrf_score": 0.03125763125763126,
+            "bm25_score": 5.4458503336228405
+          },
+          {
+            "chunk_id": "f707b6f33e29_0000",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031009615384615385,
+            "rrf_score": 0.031009615384615385,
+            "bm25_score": 4.664075229492257
+          }
+        ]
+      }
+    },
+    {
+      "id": "staff_aug_010",
+      "query": "Do you provide staff augmentation?",
+      "expected_keywords_any": [
+        "staff augmentation",
+        "staff",
+        "team",
+        "developers"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 126.63745804456994,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.19634581511112864,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "73c1e8291837_0002",
+            "source_url": "https://mobcoder.ai/services/ai-data-analytics",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.10455783267402831,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a256a263e753_0000",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.025415067203021346,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.1064427011576709,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.12403311692558507,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.67362501937896,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 12.146708996529577
+          },
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03200204813108039,
+            "rrf_score": 0.03200204813108039,
+            "bm25_score": 6.073672078866679
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03200204813108039,
+            "rrf_score": 0.03200204813108039,
+            "bm25_score": 10.416395158932522
+          },
+          {
+            "chunk_id": "73c1e8291837_0002",
+            "source_url": "https://mobcoder.ai/services/ai-data-analytics",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03125,
+            "rrf_score": 0.03125,
+            "bm25_score": 5.97270691034437
+          },
+          {
+            "chunk_id": "240af0710a17_0002",
+            "source_url": "https://mobcoder.ai/services/custom-ai-solutions",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03076923076923077,
+            "rrf_score": 0.03076923076923077,
+            "bm25_score": 4.975480522391593
+          }
+        ]
+      }
+    },
+    {
+      "id": "dedicated_devs_011",
+      "query": "Can I hire dedicated developers from MobCoder?",
+      "expected_keywords_any": [
+        "dedicated",
+        "developers",
+        "team",
+        "hire"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 98.84762502042577,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0002",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.2834735114107449,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.12408104822145863,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.025037724198250733,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.2732055723779707,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.014122788897658256,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.622666012030095,
+        "source_diversity_top5": 2,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 11.034804995665166
+          },
+          {
+            "chunk_id": "0d457caa10e0_0002",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 10.632576120255319
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031746031746031744,
+            "rrf_score": 0.031746031746031744,
+            "bm25_score": 6.995105086689185
+          },
+          {
+            "chunk_id": "0d457caa10e0_0000",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030776515151515152,
+            "rrf_score": 0.030776515151515152,
+            "bm25_score": 1.4925820912619348
+          },
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03076923076923077,
+            "rrf_score": 0.03076923076923077,
+            "bm25_score": 1.9796837454997798
+          }
+        ]
+      }
+    },
+    {
+      "id": "api_integration_012",
+      "query": "Can you integrate with Salesforce or HubSpot APIs?",
+      "expected_keywords_any": [
+        "api",
+        "integration",
+        "salesforce",
+        "hubspot"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "improved",
+      "vector": {
+        "top1_hit": false,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 3,
+        "latency_ms": 99.87387497676536,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.05237904638692756,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.044062142687714384,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.006109366046098825,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0000",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.005080516333404604,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0001",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.009590799300032073,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": false,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 2,
+        "latency_ms": 2.552957972511649,
+        "source_diversity_top5": 3,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.032266458495966696,
+            "rrf_score": 0.032266458495966696,
+            "bm25_score": 3.6458331017509984
+          },
+          {
+            "chunk_id": "f707b6f33e29_0000",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03225806451612903,
+            "rrf_score": 0.03225806451612903,
+            "bm25_score": 4.214970150778831
+          },
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.032018442622950824,
+            "rrf_score": 0.032018442622950824,
+            "bm25_score": 5.465520029681492
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03149801587301587,
+            "rrf_score": 0.03149801587301587,
+            "bm25_score": 3.5331956627300625
+          },
+          {
+            "chunk_id": "0d457caa10e0_0001",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030309988518943745,
+            "rrf_score": 0.030309988518943745,
+            "bm25_score": 2.6559490029581676
+          }
+        ]
+      }
+    },
+    {
+      "id": "cloud_devops_013",
+      "query": "What kind of cloud deployment support do you provide?",
+      "expected_keywords_any": [
+        "cloud",
+        "deployment",
+        "devops",
+        "support"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 102.85083402413875,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.1348567196730737,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "2326359d4765_0000",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07232365168463045,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.04740062350213435,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0000",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.06715364558586424,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.01566943914116767,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.6697079883888364,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 8.890765739967225
+          },
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03225806451612903,
+            "rrf_score": 0.03225806451612903,
+            "bm25_score": 6.538448322416985
+          },
+          {
+            "chunk_id": "1eebbd249b32_0001",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03149801587301587,
+            "rrf_score": 0.03149801587301587,
+            "bm25_score": 5.778793649145891
+          },
+          {
+            "chunk_id": "f707b6f33e29_0001",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031024531024531024,
+            "rrf_score": 0.031024531024531024,
+            "bm25_score": 4.812218286433519
+          },
+          {
+            "chunk_id": "2326359d4765_0000",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031009615384615385,
+            "rrf_score": 0.031009615384615385,
+            "bm25_score": 5.3740512315730875
+          }
+        ]
+      }
+    },
+    {
+      "id": "case_studies_014",
+      "query": "Do you have case studies for AI or mobile apps?",
+      "expected_keywords_any": [
+        "case study",
+        "case studies",
+        "portfolio",
+        "ai",
+        "mobile"
+      ],
+      "expected_source_url_contains_any": [
+        "/case",
+        "/portfolio",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "case_studies",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 85.75024997116998,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "799af1f28b04_0000",
+            "source_url": "https://mobcoder.ai/case-studies/tifin-ai",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.26899282353877246,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "6d434152a8e7_0000",
+            "source_url": "https://mobcoder.ai/case-studies/tread-map",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.10477797743321915,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "5d8a48796946_0000",
+            "source_url": "https://mobcoder.ai/case-studies/grantd",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0741291482277087,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f51113a37a0b_0000",
+            "source_url": "https://mobcoder.ai/case-studies",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.15765123945443263,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "c5d5328c469a_0000",
+            "source_url": "https://mobcoder.ai/case-studies/gov-gig",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0865342404948893,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 5.234875017777085,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "799af1f28b04_0000",
+            "source_url": "https://mobcoder.ai/case-studies/tifin-ai",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 17.800016702768218
+          },
+          {
+            "chunk_id": "f51113a37a0b_0000",
+            "source_url": "https://mobcoder.ai/case-studies",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03225806451612903,
+            "rrf_score": 0.03225806451612903,
+            "bm25_score": 15.64022740665895
+          },
+          {
+            "chunk_id": "c5d5328c469a_0000",
+            "source_url": "https://mobcoder.ai/case-studies/gov-gig",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031024531024531024,
+            "rrf_score": 0.031024531024531024,
+            "bm25_score": 14.430149557883214
+          },
+          {
+            "chunk_id": "6d434152a8e7_0000",
+            "source_url": "https://mobcoder.ai/case-studies/tread-map",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031009615384615385,
+            "rrf_score": 0.031009615384615385,
+            "bm25_score": 12.568573301126985
+          },
+          {
+            "chunk_id": "804ff73b3c12_0000",
+            "source_url": "https://mobcoder.ai/case-studies/nap-detect",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030798389007344232,
+            "rrf_score": 0.030798389007344232,
+            "bm25_score": 8.917164456513293
+          }
+        ]
+      }
+    },
+    {
+      "id": "discovery_call_015",
+      "query": "How does a discovery call work?",
+      "expected_keywords_any": [
+        "discovery",
+        "call",
+        "consultation",
+        "contact"
+      ],
+      "expected_source_url_contains_any": [
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "in-denver"
+      ],
+      "expected_category": "contact",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 0.9878749842755497,
+        "source_diversity_top5": 1,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "d258e99a4727_0000",
+            "source_url": "https://mobcoder.ai/contact-us",
+            "page_title": "",
+            "page_category": "contact",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.1543208054820624,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 1.3174170162528753,
+        "source_diversity_top5": 1,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "d258e99a4727_0000",
+            "source_url": "https://mobcoder.ai/contact-us",
+            "page_title": "",
+            "page_category": "contact",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 9.957282606993944
+          }
+        ]
+      }
+    },
+    {
+      "id": "pricing_016",
+      "query": "How much does a MobCoder project cost?",
+      "expected_keywords_any": [
+        "cost",
+        "pricing",
+        "budget",
+        "project"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 140.58837504126132,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.33689115063831,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0388ce6e948b_0001",
+            "source_url": "https://mobcoder.ai/services/conversational-ai-platform",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07651690268100216,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "6a4be16c6e2b_0001",
+            "source_url": "https://mobcoder.ai/construction-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08574277332087024,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0003",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07523247498854356,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.12470400774438349,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.690707978326827,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 21.52342189601923
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03200204813108039,
+            "rrf_score": 0.03200204813108039,
+            "bm25_score": 11.744273598673482
+          },
+          {
+            "chunk_id": "caed73bc0b55_0003",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03200204813108039,
+            "rrf_score": 0.03200204813108039,
+            "bm25_score": 11.3428728894485
+          },
+          {
+            "chunk_id": "2cf242b69794_0001",
+            "source_url": "https://mobcoder.ai/fintech-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031009615384615385,
+            "rrf_score": 0.031009615384615385,
+            "bm25_score": 9.925383069285388
+          },
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03055037313432836,
+            "rrf_score": 0.03055037313432836,
+            "bm25_score": 7.554811076699988
+          }
+        ]
+      }
+    },
+    {
+      "id": "maintenance_017",
+      "query": "Can you help with an existing app maintenance project?",
+      "expected_keywords_any": [
+        "maintenance",
+        "support",
+        "existing app",
+        "project"
+      ],
+      "expected_source_url_contains_any": [
+        "/service",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "services",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 99.3410000228323,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.10837498131133985,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f707b6f33e29_0002",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.05740018809154915,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07227035868015232,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0d457caa10e0_0000",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.007138659013984876,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1eebbd249b32_0001",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.05735644546366095,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.5585410185158253,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "46a64341ab45_0001",
+            "source_url": "https://mobcoder.ai/services/industry-specific",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 5.851624734577101
+          },
+          {
+            "chunk_id": "2326359d4765_0001",
+            "source_url": "https://mobcoder.ai/services/computer-vision",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03177805800756621,
+            "rrf_score": 0.03177805800756621,
+            "bm25_score": 6.152573083308566
+          },
+          {
+            "chunk_id": "0d457caa10e0_0003",
+            "source_url": "https://mobcoder.ai/services/nlp-services",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031754032258064516,
+            "rrf_score": 0.031754032258064516,
+            "bm25_score": 5.595220504880192
+          },
+          {
+            "chunk_id": "f707b6f33e29_0001",
+            "source_url": "https://mobcoder.ai/services/intelligent-automation",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03149801587301587,
+            "rrf_score": 0.03149801587301587,
+            "bm25_score": 5.829663760546042
+          },
+          {
+            "chunk_id": "1eebbd249b32_0002",
+            "source_url": "https://mobcoder.ai/services/llm-powered-development",
+            "page_title": "",
+            "page_category": "services",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031024531024531024,
+            "rrf_score": 0.031024531024531024,
+            "bm25_score": 4.648983248494927
+          }
+        ]
+      }
+    },
+    {
+      "id": "sales_bot_018",
+      "query": "Can you build a custom sales chatbot like this one?",
+      "expected_keywords_any": [
+        "sales",
+        "chatbot",
+        "custom",
+        "ai"
+      ],
+      "expected_source_url_contains_any": [
+        "/ai",
+        "/service",
+        "/agent"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 125.95120799960569,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "a256a263e753_0000",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.22410380160956955,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0882915960712351,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0001",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07549573203635271,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "d1ea2b7a043a_0002",
+            "source_url": "https://mobcoder.ai/services/machine-learning",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08670636818680891,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "2cf242b69794_0001",
+            "source_url": "https://mobcoder.ai/fintech-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07220458638802255,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.6207080273889005,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "a256a263e753_0000",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 12.310931646321656
+          },
+          {
+            "chunk_id": "240af0710a17_0000",
+            "source_url": "https://mobcoder.ai/services/custom-ai-solutions",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.0315136476426799,
+            "rrf_score": 0.0315136476426799,
+            "bm25_score": 7.0331458736393895
+          },
+          {
+            "chunk_id": "d1ea2b7a043a_0002",
+            "source_url": "https://mobcoder.ai/services/machine-learning",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031054405392392875,
+            "rrf_score": 0.031054405392392875,
+            "bm25_score": 8.860286821265046
+          },
+          {
+            "chunk_id": "a256a263e753_0001",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03055037313432836,
+            "rrf_score": 0.03055037313432836,
+            "bm25_score": 6.008173013040325
+          },
+          {
+            "chunk_id": "0de03cffa9ee_0001",
+            "source_url": "https://mobcoder.ai/services/ai-integration",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030330882352941176,
+            "rrf_score": 0.030330882352941176,
+            "bm25_score": 8.79798470922379
+          }
+        ]
+      }
+    },
+    {
+      "id": "llm_guardrails_019",
+      "query": "How do you handle LLM hallucination and guardrails?",
+      "expected_keywords_any": [
+        "llm",
+        "hallucination",
+        "guardrails",
+        "evaluation"
+      ],
+      "expected_source_url_contains_any": [
+        "/ai",
+        "/service",
+        "mobcoder.ai"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "improved",
+      "vector": {
+        "top1_hit": false,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 2,
+        "latency_ms": 125.89587504044175,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.1462346618345347,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0001",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.13226604468713796,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08448427976727751,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a256a263e753_0002",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.11042360048752203,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "8a80cc0bc4c7_0001",
+            "source_url": "https://mobcoder.ai/ai-cloud-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0800292388390684,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.659082999452949,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "1f5cf6f390ff_0001",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 9.813039842490179
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03200204813108039,
+            "rrf_score": 0.03200204813108039,
+            "bm25_score": 8.302474591984335
+          },
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03177805800756621,
+            "rrf_score": 0.03177805800756621,
+            "bm25_score": 5.414245012461947
+          },
+          {
+            "chunk_id": "a256a263e753_0002",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03149801587301587,
+            "rrf_score": 0.03149801587301587,
+            "bm25_score": 6.108191596085998
+          },
+          {
+            "chunk_id": "caed73bc0b55_0001",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030776515151515152,
+            "rrf_score": 0.030776515151515152,
+            "bm25_score": 6.059216108396568
+          }
+        ]
+      }
+    },
+    {
+      "id": "ai_process_020",
+      "query": "What is your AI agent development process?",
+      "expected_keywords_any": [
+        "ai agent",
+        "process",
+        "development",
+        "automation"
+      ],
+      "expected_source_url_contains_any": [
+        "/ai",
+        "/service",
+        "/agent"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 125.78424997627735,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "1f5cf6f390ff_0001",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.3312636409635221,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a256a263e753_0002",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.22497963604304222,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "240af0710a17_0002",
+            "source_url": "https://mobcoder.ai/services/custom-ai-solutions",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.24304618574195422,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0000",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.2841822994221584,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "caed73bc0b55_0001",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.22959769934711213,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.7169580035842955,
+        "source_diversity_top5": 3,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "1f5cf6f390ff_0001",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 6.759206512256563
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0000",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03225806451612903,
+            "rrf_score": 0.03225806451612903,
+            "bm25_score": 6.162065663802399
+          },
+          {
+            "chunk_id": "240af0710a17_0002",
+            "source_url": "https://mobcoder.ai/services/custom-ai-solutions",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030798389007344232,
+            "rrf_score": 0.030798389007344232,
+            "bm25_score": 3.9518497064416644
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0002",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03036576949620428,
+            "rrf_score": 0.03036576949620428,
+            "bm25_score": 5.617263830886639
+          },
+          {
+            "chunk_id": "a256a263e753_0001",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.029857397504456328,
+            "rrf_score": 0.029857397504456328,
+            "bm25_score": 3.981983449761125
+          }
+        ]
+      }
+    },
+    {
+      "id": "rag_typo_021",
+      "query": "need rag chatbto for internal docs",
+      "expected_keywords_any": [
+        "rag",
+        "chatbot",
+        "internal"
+      ],
+      "expected_source_url_contains_any": [
+        "/ai",
+        "/services",
+        "/agent"
+      ],
+      "forbidden_source_url_contains_any": [
+        "contact-us",
+        "in-denver",
+        "in-sydney"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 126.15470797754824,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "a256a263e753_0000",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.12367615301101956,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.03804875875378573,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "73c1e8291837_0002",
+            "source_url": "https://mobcoder.ai/services/ai-data-analytics",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.030979255133263127,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0001",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.03057664922149652,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "05bebb03f56e_0000",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07171901016029204,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.583333004731685,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0000",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031754032258064516,
+            "rrf_score": 0.031754032258064516,
+            "bm25_score": 5.576816827254516
+          },
+          {
+            "chunk_id": "0388ce6e948b_0000",
+            "source_url": "https://mobcoder.ai/services/conversational-ai-platform",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031544957774465976,
+            "rrf_score": 0.031544957774465976,
+            "bm25_score": 6.173829064287045
+          },
+          {
+            "chunk_id": "a256a263e753_0000",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03131881575727918,
+            "rrf_score": 0.03131881575727918,
+            "bm25_score": 3.5679020837744186
+          },
+          {
+            "chunk_id": "a256a263e753_0001",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03125763125763126,
+            "rrf_score": 0.03125763125763126,
+            "bm25_score": 4.70579352547686
+          },
+          {
+            "chunk_id": "caed73bc0b55_0001",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03125763125763126,
+            "rrf_score": 0.03125763125763126,
+            "bm25_score": 5.305618015067093
+          }
+        ]
+      }
+    },
+    {
+      "id": "pilot_supply_chain_copilot",
+      "query": "Can you help me with a Co-Pilot for SupplyChain department",
+      "expected_keywords_any": [
+        "co-pilot",
+        "copilot",
+        "supply chain",
+        "workflow",
+        "agent"
+      ],
+      "expected_source_url_contains_any": [
+        "/services/ai-capabilities-overview",
+        "/services/agentic-ai",
+        "/services/ai-"
+      ],
+      "forbidden_source_url_contains_any": [
+        "/blog/",
+        "in-denver",
+        "in-sydney"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "improved",
+      "vector": {
+        "top1_hit": false,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 2,
+        "latency_ms": 125.7667500176467,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08165019751436224,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "05bebb03f56e_0000",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07969415912711324,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "2cf242b69794_0001",
+            "source_url": "https://mobcoder.ai/fintech-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.057420983844415865,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a736ba735512_0001",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0385740968846827,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "73c1e8291837_0002",
+            "source_url": "https://mobcoder.ai/services/ai-data-analytics",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.04362518800124452,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.685207994654775,
+        "source_diversity_top5": 4,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0000",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 8.773428328710395
+          },
+          {
+            "chunk_id": "a736ba735512_0002",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03252247488101534,
+            "rrf_score": 0.03252247488101534,
+            "bm25_score": 4.938229128652837
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03149801587301587,
+            "rrf_score": 0.03149801587301587,
+            "bm25_score": 4.030423779057947
+          },
+          {
+            "chunk_id": "d1ea2b7a043a_0003",
+            "source_url": "https://mobcoder.ai/services/machine-learning",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03057889822595705,
+            "rrf_score": 0.03057889822595705,
+            "bm25_score": 4.415425692070463
+          },
+          {
+            "chunk_id": "a736ba735512_0000",
+            "source_url": "https://mobcoder.ai/services/ai-consultation",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03055037313432836,
+            "rrf_score": 0.03055037313432836,
+            "bm25_score": 3.8029846842520585
+          }
+        ]
+      }
+    },
+    {
+      "id": "pilot_case_studies",
+      "query": "Can you share Mobcoder AI case studies?",
+      "expected_keywords_any": [
+        "case stud",
+        "gov",
+        "tifin",
+        "nap",
+        "client"
+      ],
+      "expected_source_url_contains_any": [
+        "/case-stud"
+      ],
+      "forbidden_source_url_contains_any": [
+        "/blog/",
+        "in-denver"
+      ],
+      "expected_category": "case_studies",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 77.70854199770838,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "799af1f28b04_0000",
+            "source_url": "https://mobcoder.ai/case-studies/tifin-ai",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.23721446301871862,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "6d434152a8e7_0000",
+            "source_url": "https://mobcoder.ai/case-studies/tread-map",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.10516455302528761,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "5d8a48796946_0000",
+            "source_url": "https://mobcoder.ai/case-studies/grantd",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.07393804075083163,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "c5d5328c469a_0000",
+            "source_url": "https://mobcoder.ai/case-studies/gov-gig",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0873457890731491,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "f51113a37a0b_0000",
+            "source_url": "https://mobcoder.ai/case-studies",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.15074477155647956,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 2.213125000707805,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "799af1f28b04_0000",
+            "source_url": "https://mobcoder.ai/case-studies/tifin-ai",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 14.991917642657448
+          },
+          {
+            "chunk_id": "f51113a37a0b_0000",
+            "source_url": "https://mobcoder.ai/case-studies",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03200204813108039,
+            "rrf_score": 0.03200204813108039,
+            "bm25_score": 12.985463340644163
+          },
+          {
+            "chunk_id": "c5d5328c469a_0000",
+            "source_url": "https://mobcoder.ai/case-studies/gov-gig",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03128054740957967,
+            "rrf_score": 0.03128054740957967,
+            "bm25_score": 14.131127188218393
+          },
+          {
+            "chunk_id": "6d434152a8e7_0000",
+            "source_url": "https://mobcoder.ai/case-studies/tread-map",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031009615384615385,
+            "rrf_score": 0.031009615384615385,
+            "bm25_score": 12.828049091837514
+          },
+          {
+            "chunk_id": "804ff73b3c12_0000",
+            "source_url": "https://mobcoder.ai/case-studies/nap-detect",
+            "page_title": "",
+            "page_category": "case_studies",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.030798389007344232,
+            "rrf_score": 0.030798389007344232,
+            "bm25_score": 8.820893904671342
+          }
+        ]
+      }
+    },
+    {
+      "id": "pilot_pricing",
+      "query": "What about the Pricing?",
+      "expected_keywords_any": [
+        "pricing",
+        "engagement",
+        "quote",
+        "cost",
+        "model"
+      ],
+      "expected_source_url_contains_any": [
+        "/services/ai-capabilities-overview",
+        "/services/"
+      ],
+      "forbidden_source_url_contains_any": [
+        "/blog/",
+        "in-denver"
+      ],
+      "expected_category": "ai_agents",
+      "url_target_pass": true,
+      "comparison": "same",
+      "vector": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 125.65795797854662,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": true,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.4032839469219036,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "0388ce6e948b_0001",
+            "source_url": "https://mobcoder.ai/services/conversational-ai-platform",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.05707285895674111,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "2cf242b69794_0001",
+            "source_url": "https://mobcoder.ai/fintech-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.08913521607378114,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0000",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.0715334100902742,
+            "rrf_score": null,
+            "bm25_score": null
+          },
+          {
+            "chunk_id": "a256a263e753_0002",
+            "source_url": "https://mobcoder.ai/services/ai-chatbots",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector"
+            ],
+            "score": 0.06844908609034686,
+            "rrf_score": null,
+            "bm25_score": null
+          }
+        ]
+      },
+      "hybrid": {
+        "top1_hit": true,
+        "top3_hit": true,
+        "top5_hit": true,
+        "first_hit_rank": 1,
+        "latency_ms": 7.869791006669402,
+        "source_diversity_top5": 5,
+        "metadata_ok": true,
+        "fallback_to_vector_only": false,
+        "top_sources": [
+          {
+            "chunk_id": "05bebb03f56e_0001",
+            "source_url": "https://mobcoder.ai/services/ai-capabilities-overview",
+            "page_title": "Mobcoder AI \u2014 Generative AI & Agentic Systems Capabilities",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03278688524590164,
+            "rrf_score": 0.03278688524590164,
+            "bm25_score": 24.242207780377676
+          },
+          {
+            "chunk_id": "2cf242b69794_0001",
+            "source_url": "https://mobcoder.ai/fintech-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03225806451612903,
+            "rrf_score": 0.03225806451612903,
+            "bm25_score": 9.300064359971511
+          },
+          {
+            "chunk_id": "caed73bc0b55_0002",
+            "source_url": "https://mobcoder.ai/generative-ai-development-services",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.031024531024531024,
+            "rrf_score": 0.031024531024531024,
+            "bm25_score": 8.042862228375906
+          },
+          {
+            "chunk_id": "1f5cf6f390ff_0000",
+            "source_url": "https://mobcoder.ai/services/agentic-ai",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.03055037313432836,
+            "rrf_score": 0.03055037313432836,
+            "bm25_score": 7.905284044177151
+          },
+          {
+            "chunk_id": "0de03cffa9ee_0002",
+            "source_url": "https://mobcoder.ai/services/ai-integration",
+            "page_title": "",
+            "page_category": "ai_agents",
+            "retrieval_paths": [
+              "vector",
+              "bm25"
+            ],
+            "score": 0.029957522915269395,
+            "rrf_score": 0.029957522915269395,
+            "bm25_score": 3.528034014199112
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+apify-client>=1.6.0
+chromadb>=0.5.0
+# Windows WDAC can block rpds-py (jsonschema>=4.19); these versions avoid that import chain.
+jsonschema==4.17.3
+referencing==0.30.2
+fastapi>=0.110.0
+langgraph>=0.2.0
+openai>=1.30.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+tenacity>=8.2.0
+tiktoken>=0.6.0
+uvicorn>=0.29.0
+httpx>=0.27.0
+redis>=5.0.0
+psycopg[binary,pool]>=3.1.0
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+

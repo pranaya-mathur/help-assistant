@@ -1,0 +1,73 @@
+# Local development stack (Postgres + Redis + API)
+#
+#   docker compose up --build
+#   API:     http://127.0.0.1:8001
+#   Postgres: localhost:5432 (mobcoder / mobcoder)
+#
+name: mobcoder-dev
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: mobcoder
+      POSTGRES_PASSWORD: mobcoder
+      POSTGRES_DB: mobcoder
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mobcoder -d mobcoder"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mobcoder-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    environment:
+      API_PORT: "8080"
+      API_RELOAD: "false"
+      APP_ENV: development
+      AUTO_INGEST_ON_START: "true"
+      SESSION_STORE_BACKEND: postgres
+      DATABASE_URL: postgresql://mobcoder:mobcoder@postgres:5432/mobcoder
+      AUTO_MIGRATE_DB: "true"
+      PERSIST_ANALYTICS_EVENTS: "true"
+      RATE_LIMIT_BACKEND: redis
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+
+volumes:
+  postgres_data:
+  redis_data:

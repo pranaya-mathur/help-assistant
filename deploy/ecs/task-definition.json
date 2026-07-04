@@ -1,0 +1,111 @@
+{
+  "family": "mobcoder-sales-api",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/mobcoder-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/mobcoder-ecs-task-role",
+  "volumes": [
+    {
+      "name": "chroma-efs",
+      "efsVolumeConfiguration": {
+        "fileSystemId": "fs-REPLACE_EFS_ID",
+        "transitEncryption": "ENABLED",
+        "authorizationConfig": {
+          "iam": "ENABLED"
+        }
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "mobcoder-api",
+      "image": "ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/mobcoder-sales-agent:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "chroma-efs",
+          "containerPath": "/mnt/efs/chroma",
+          "readOnly": false
+        },
+        {
+          "sourceVolume": "chroma-efs",
+          "containerPath": "/mnt/efs/indexes",
+          "readOnly": false
+        }
+      ],
+      "environment": [
+        { "name": "APP_ENV", "value": "production" },
+        { "name": "API_PORT", "value": "8080" },
+        { "name": "API_RELOAD", "value": "false" },
+        { "name": "AUTO_INGEST_ON_START", "value": "true" },
+        { "name": "UVICORN_WORKERS", "value": "1" },
+        { "name": "SESSION_STORE_BACKEND", "value": "postgres" },
+        { "name": "AUTO_MIGRATE_DB", "value": "true" },
+        { "name": "PERSIST_ANALYTICS_EVENTS", "value": "true" },
+        { "name": "RATE_LIMIT_BACKEND", "value": "redis" },
+        { "name": "TRUST_PROXY_HEADERS", "value": "true" },
+        { "name": "FORWARDED_ALLOW_IPS", "value": "*" },
+        { "name": "ENABLE_DOCS", "value": "false" },
+        { "name": "ENABLE_SOURCE_ENDPOINTS", "value": "false" },
+        { "name": "ENABLE_DEBUG_ENDPOINTS", "value": "false" },
+        { "name": "EXPOSE_INTERNAL_SALES_METADATA", "value": "false" },
+        { "name": "ENABLE_LEAD_QUALIFICATION", "value": "true" },
+        { "name": "ENABLE_CHAT_STREAMING", "value": "true" },
+        { "name": "ENABLE_LLM_GROUNDING", "value": "true" },
+        { "name": "GROUNDING_PROVIDER", "value": "heuristic" },
+        { "name": "CHROMA_PERSIST_DIR", "value": "/mnt/efs/chroma" },
+        { "name": "BM25_INDEX_PATH", "value": "/mnt/efs/indexes/bm25_index.pkl" },
+        { "name": "HYBRID_RETRIEVAL_ENABLED", "value": "false" },
+        { "name": "RERANKER_TOP_K", "value": "6" },
+        {
+          "name": "CORS_ALLOWED_ORIGINS",
+          "value": "https://devweb-agent.mobcoder.ai,https://mobcoder.ai,https://www.mobcoder.ai"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "OPENAI_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:AWS_REGION:ACCOUNT_ID:secret:mobcoder/production/app:OPENAI_API_KEY::"
+        },
+        {
+          "name": "DATABASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:AWS_REGION:ACCOUNT_ID:secret:mobcoder/production/app:DATABASE_URL::"
+        },
+        {
+          "name": "REDIS_URL",
+          "valueFrom": "arn:aws:secretsmanager:AWS_REGION:ACCOUNT_ID:secret:mobcoder/production/app:REDIS_URL::"
+        },
+        {
+          "name": "APIFY_API_TOKEN",
+          "valueFrom": "arn:aws:secretsmanager:AWS_REGION:ACCOUNT_ID:secret:mobcoder/production/app:APIFY_API_TOKEN::"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/mobcoder-sales-api",
+          "awslogs-region": "AWS_REGION",
+          "awslogs-stream-prefix": "api"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -fsS http://127.0.0.1:8080/api/v1/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 120
+      }
+    }
+  ]
+}

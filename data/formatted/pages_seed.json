@@ -1,0 +1,121 @@
+[
+  {
+    "source_url": "https://mobcoder.ai/",
+    "page_title": "Mobcoder AI - Custom AI Development Company",
+    "page_category": "ai_agents",
+    "content_type": "overview",
+    "clean_text": "Mobcoder AI is a custom AI software development company. We provide AI solutions that help businesses automate processes, predict outcomes, and scale smarter across industries globally.\n\nCore offerings include: Conversational AI, AI Integration and Deployment, AI Agent Development, Generative AI Development, and AI Automation.\n\nMobcoder is trusted by 150+ brands. We build, deploy, and optimize AI solutions end to end—from identifying the right use cases to deploying scalable systems.\n\nService areas: AI Strategy and Consultation, AI Product Development, Generative AI Development, Agentic AI Development, AI Chatbot Development, Enterprise AI System Integration, Machine Learning and LLM Solutions, Intelligent Process Automation, Research and Innovation, Cybersecurity and Compliance.\n\nAI Strategy and Consultation includes: AI use case discovery aligned with business goals, ROI modeling and cost-benefit analysis, data readiness assessment, AI architecture and technology stack planning, and framework discussion to accelerate deployment."
+  },
+  {
+    "source_url": "https://mobcoder.ai/services/agentic-ai",
+    "page_title": "Agentic AI and AI Agent Development",
+    "page_category": "ai_agents",
+    "content_type": "capabilities",
+    "clean_text": "Mobcoder specializes in Agentic AI Development and AI Agent Development. We design autonomous and semi-autonomous agents that integrate with business workflows, including customer support automation, internal copilots, and multi-step task execution using LLMs and tool calling.\n\nCapabilities include: multi-agent orchestration, RAG-powered knowledge agents, tool-use and function-calling pipelines, LangGraph and LangChain-based workflows, agent evaluation and observability, and production deployment on AWS/GCP/Azure.\n\nCommon use cases: AI sales agents, AI support agents, internal operations copilots, document processing agents, agentic RPA pipelines, and research automation."
+  },
+  {
+    "source_url": "https://mobcoder.ai/generative-ai-development-services",
+    "page_title": "Generative AI and LLM Solutions",
+    "page_category": "ai_agents",
+    "content_type": "capabilities",
+    "clean_text": "Mobcoder delivers Generative AI Development and Machine Learning and LLM Solutions. Capabilities include custom model integration, RAG systems, fine-tuning strategies, prompt engineering, and production deployment of chatbots and content generation pipelines.\n\nTech stack: OpenAI GPT-4o, Anthropic Claude, Mistral, LLaMA, LangChain, LlamaIndex, Pinecone, Weaviate, ChromaDB, Qdrant, Hugging Face, AWS Bedrock, Google Vertex AI.\n\nDeliverables: production RAG systems with hybrid retrieval, fine-tuned domain models, multimodal AI pipelines, streaming LLM APIs, and LLM evaluation frameworks."
+  },
+  {
+    "source_url": "https://mobcoder.ai/ai-development-services",
+    "page_title": "AI Chatbot and Conversational AI Development",
+    "page_category": "ai_agents",
+    "content_type": "capabilities",
+    "clean_text": "Mobcoder builds AI Chatbot Development and Conversational AI solutions for web and mobile. We focus on grounded responses, enterprise integration, analytics, and scalable deployment for sales, support, and internal help use cases.\n\nFeatures: real-time streaming responses, session memory, lead qualification flows, intent classification, multi-turn dialogue management, CRM integration (HubSpot, Salesforce), and embeddable widget deployment.\n\nDeployment targets: website chat widgets, Slack bots, WhatsApp, Teams, and custom mobile SDKs."
+  },
+  {
+    "source_url": "https://mobcoder.ai/services",
+    "page_title": "AI Strategy and Consultation",
+    "page_category": "services",
+    "content_type": "capabilities",
+    "clean_text": "Mobcoder AI consulting helps organizations identify high-impact AI opportunities. Services include AI use case discovery aligned with business goals, ROI modeling, data readiness and gap analysis, AI architecture planning, and technology stack recommendations to accelerate deployment.\n\nEngagement format: 2-week discovery sprint → architecture document → phased implementation roadmap. Deliverables include a prioritized AI opportunity matrix, build-vs-buy recommendations, and a staffing plan."
+  },
+  {
+    "source_url": "https://mobcoder.ai/services",
+    "page_title": "Enterprise AI Integration and Automation",
+    "page_category": "services",
+    "content_type": "capabilities",
+    "clean_text": "Enterprise AI System Integration connects AI capabilities to CRMs, data warehouses, and existing software. Intelligent Process Automation reduces manual work through workflow automation combined with AI decision steps. Mobcoder also supports cybersecurity and compliance considerations for production AI systems.\n\nIntegration targets: Salesforce, HubSpot, SAP, Workday, Snowflake, Databricks, AWS, GCP, Azure. We build REST and GraphQL APIs, event-driven pipelines with Kafka/SQS, and real-time data sync layers."
+  },
+  {
+    "source_url": "https://mobcoder.ai/services",
+    "page_title": "Mobile, Web and Product Engineering",
+    "page_category": "services",
+    "content_type": "overview",
+    "clean_text": "Beyond AI, Mobcoder provides full-stack product engineering — mobile applications (iOS and Android with React Native and Flutter), web platforms (React, Next.js, Vue), cloud-native backend services (Node.js, FastAPI, Django, Go), and dedicated engineering teams for product delivery and team augmentation.\n\nEngagement models: fixed-scope delivery, dedicated squad (3–12 engineers), or staff augmentation. Teams include senior engineers, tech leads, QA, and DevOps."
+  },
+  {
+    "source_url": "https://mobcoder.ai/contact-us",
+    "page_title": "Contact Mobcoder AI",
+    "page_category": "contact",
+    "content_type": "contact",
+    "clean_text": "Contact Mobcoder AI to start a project. Reach the team for general questions or to request a quote. Phone: +1 3067169910 (USA/Canada) and +91 87503 13446 (India). Email: hello@mobcoder.ai. Offices: Seattle HQ (USA), Noida (India), Singapore, Vancouver (Canada), and Australia.\n\nVisitors can submit inquiries on /contact-us with project details including resources required, technology focus, expected start date, and project budget range. Response time is typically within 24 hours.\n\nEngagement flow: book a free 30-minute discovery call, then receive a scoped proposal with timeline and team composition. Book via Calendly: https://calendly.com/hello-mobcoder/mobcoderai"
+  },
+  {
+    "source_url": "https://mobcoder.ai/services",
+    "page_title": "Engagement Models and Pricing",
+    "page_category": "services",
+    "content_type": "pricing",
+    "clean_text": "Mobcoder offers three primary engagement models:\n\n1. Fixed-Scope Project Delivery — Ideal for well-defined products or features with a clear spec. Pricing is quoted after a discovery call and scoping session. Typical projects range from $15,000 for MVPs to $150,000+ for full-scale AI platforms, depending on complexity and team size.\n\n2. Dedicated Squad Augmentation — A dedicated team of 3–10 engineers, designers, and AI specialists embedded in your product organization. Monthly retainer model. Typical monthly cost ranges from $18,000 to $80,000 depending on team size and seniority mix.\n\n3. Ongoing AI Operations Support — Monitoring, optimization, retraining, and scaling of deployed AI systems. Monthly retainer starting at $5,000/month.\n\nAll engagements start with a free 30-minute discovery call and a scoping session. We provide a detailed proposal with timeline, team composition, and cost breakdown within 3–5 business days. No hidden fees — the proposal price is the final price.\n\nTo get a custom quote, book a discovery call or fill out the contact form at https://mobcoder.ai/contact-us"
+  },
+  {
+    "source_url": "https://mobcoder.ai/case-studies#tifin",
+    "page_title": "Case Study: TIFIN — AI-Powered Financial Wellness Platform",
+    "page_category": "case_studies",
+    "content_type": "case_study",
+    "clean_text": "TIFIN @Work is a holistic AI-powered conversational platform built to help individuals achieve financial wellness. Mobcoder contributed NLP chatbot development, real-time personalization, predictive analytics in FinTech, AI recommendation systems, behavioral data modeling, and AI-driven decision systems.\n\nThe platform delivers personalized financial guidance through conversational AI, using behavioral data to surface the right recommendations at the right time.\n\nKey technologies: NLP, real-time personalization, predictive analytics, AI recommendation systems. View full case studies at https://mobcoder.ai/case-studies"
+  },
+  {
+    "source_url": "https://mobcoder.ai/case-studies#nap-detect",
+    "page_title": "Case Study: Nap Detect — AI Road Safety Mobile App",
+    "page_category": "case_studies",
+    "content_type": "case_study",
+    "clean_text": "Nap Detect is an AI-enabled mobile safety application designed to reduce road accidents caused by driver drowsiness and distraction. Mobcoder built the AI core including facial recognition and analysis, on-device machine learning models, driver fatigue detection, and AI for accident prevention.\n\nThe app runs entirely on-device for real-time performance without network dependency, using computer vision to monitor driver alertness and trigger safety alerts before accidents occur.\n\nKey technologies: Facial recognition, on-device AI models, machine learning on mobile, computer vision. View full case studies at https://mobcoder.ai/case-studies"
+  },
+  {
+    "source_url": "https://mobcoder.ai/case-studies#tread-map",
+    "page_title": "Case Study: TREAD Map — Geo-Spatial AI Trail Platform",
+    "page_category": "case_studies",
+    "content_type": "case_study",
+    "clean_text": "TREAD Map is a SaaS-based social-mapping platform designed to improve communication, safety, and engagement across outdoor trail ecosystems. Mobcoder built the AI and data layer including geo-spatial AI, machine learning, real-time data analytics, AI integration services, and predictive analytics.\n\nThe platform connects trail users, land managers, and communities with real-time safety information and intelligent route recommendations.\n\nKey technologies: Geo-spatial AI, machine learning, real-time data analytics, predictive analytics, AI integration. View full case studies at https://mobcoder.ai/case-studies"
+  },
+  {
+    "source_url": "https://mobcoder.ai/case-studies#govgig",
+    "page_title": "Case Study: GovGig — AI Regulatory Assistant for Federal Contracting",
+    "page_category": "case_studies",
+    "content_type": "case_study",
+    "clean_text": "GovGig is a U.S.-based federal contracting platform designed to help contractors navigate complex regulatory frameworks including FAR, DFARS, and EM 385-1-1. Mobcoder built an AI-powered regulatory assistant using intelligent document processing, compliance automation, and context-aware conversational AI.\n\nThe system helps contractors instantly find answers across thousands of pages of federal regulations, reducing compliance research time significantly.\n\nKey technologies: AI-powered regulatory assistant, intelligent document processing, compliance automation, generative AI for enterprise, conversational AI, context-aware AI systems. View full case studies at https://mobcoder.ai/case-studies"
+  },
+  {
+    "source_url": "https://mobcoder.ai/case-studies#chatgptree",
+    "page_title": "Case Study: ChatGPTree — AI Conversation Tree App",
+    "page_category": "case_studies",
+    "content_type": "case_study",
+    "clean_text": "ChatGPTree redefines AI interaction by turning linear conversations into dynamic, tree-structured experiences. Mobcoder built the mobile application with a focus on UX/UI and artificial intelligence integration, enabling users to branch conversations, explore alternate paths, and manage complex multi-thread dialogues.\n\nKey technologies: Mobile app development, UX/UI design, artificial intelligence, conversational AI. View full case studies at https://mobcoder.ai/case-studies"
+  },
+  {
+    "source_url": "https://mobcoder.ai/case-studies#accountability-intelligence",
+    "page_title": "Case Study: Accountability Intelligence — AI Accountability Platform",
+    "page_category": "case_studies",
+    "content_type": "case_study",
+    "clean_text": "Accountability Intelligence is a research-driven platform designed to measure and improve accountability across individuals, teams, and organizations. Mobcoder built the full stack including AI chatbot development, LLM integration, OpenAI integration, FastAPI backend, Node.js services, and cloud-native deployment.\n\nThe platform uses AI to surface accountability patterns, provide coaching nudges, and give leaders data-driven insights into team performance and follow-through.\n\nKey technologies: AI chatbot development, LLM integration, OpenAI integration, FastAPI, Node.js, cloud-native applications. View full case studies at https://mobcoder.ai/case-studies"
+  },
+  {
+    "source_url": "https://mobcoder.ai/about",
+    "page_title": "About Mobcoder AI",
+    "page_category": "about",
+    "content_type": "overview",
+    "clean_text": "Mobcoder AI is a technology company founded to help businesses harness the power of artificial intelligence. Headquartered in Vancouver, Canada, with a globally distributed engineering team.\n\nThe team consists of 50+ engineers, AI researchers, and product specialists. Core competencies: applied AI/ML, full-stack product engineering, and enterprise system integration.\n\nApproach: Mobcoder acts as a strategic AI partner, not just a vendor. Every engagement starts with business outcome alignment before any technical scoping. We prioritize production-ready, scalable systems over prototypes.\n\nTechnologies: Python, TypeScript/JavaScript, React, Next.js, FastAPI, Node.js, LangChain, LangGraph, LlamaIndex, OpenAI, Anthropic, AWS, GCP, Azure, PostgreSQL, Redis, Kafka, Docker, Kubernetes."
+  },
+  {
+    "source_url": "https://mobcoder.ai/fintech-ai-development-services",
+    "page_title": "Fintech and Financial AI Development",
+    "page_category": "services",
+    "content_type": "capabilities",
+    "clean_text": "Mobcoder provides specialized AI development for fintech and financial services companies. Services include: AI-powered risk scoring and underwriting automation, fraud detection pipelines, AI-driven customer onboarding, regulatory compliance automation (KYC/AML), and AI analytics for financial data.\n\nSecurity and compliance: SOC 2 Type II-compatible architectures, data encryption at rest and in transit, role-based access control, full audit logging, and GDPR/CCPA-compliant data pipelines.\n\nClients include insurance carriers, lending platforms, wealth management tools, and digital banking products."
+  }
+]

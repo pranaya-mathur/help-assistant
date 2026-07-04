@@ -1,0 +1,26 @@
+# Copy to terraform.tfvars and fill secrets (never commit terraform.tfvars)
+
+aws_region   = "us-east-1"
+environment  = "staging" # prod | staging | dev — staging/dev enable /docs on the ALB
+project_name = "mobcoder-sales-agent"
+
+# Required before first healthy deploy — or update Secrets Manager after apply
+openai_api_key = "sk-..."
+
+# Optional
+# apify_api_token       = "..."
+# hubspot_webhook_url   = "https://..."
+# acm_certificate_arn   = "arn:aws:acm:us-east-1:123456789012:certificate/..."
+# cors_allowed_origins  = "https://devweb-agent.mobcoder.ai,https://mobcoder.ai,https://www.mobcoder.ai"
+
+# GitHub Actions OIDC (recommended for prod CI; skip for GitLab or manual deploy)
+enable_github_oidc = false
+# github_repo        = "YOUR_ORG/mobcoder-sales-agent"
+
+# First deploy: true until /api/v1/health shows vector_store_count > 0
+auto_ingest_on_start = true
+
+# Sizing — use 1 replica for staging/dev to save cost
+ecs_desired_count = 1
+# db_instance_class   = "db.t4g.micro"
+# cache_node_type     = "cache.t4g.micro"

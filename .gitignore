@@ -1,0 +1,72 @@
+# Terraform
+deploy/terraform/.terraform/
+deploy/terraform/*.tfstate
+deploy/terraform/*.tfstate.*
+deploy/terraform/terraform.tfvars
+deploy/terraform/.terraform.lock.hcl
+deploy/terraform/crash.log
+
+.env
+.env.local
+.env.staging
+.env.production
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+pip-wheel-metadata/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+.claude/
+*.code-workspace
+
+# Crawl, ingest, and vector store (regenerate locally)
+data/raw/
+data/chunks/
+data/embeddings/
+data/sessions/
+data/ingest/
+
+# Generated formatted pages (keep seed for quick start)
+data/formatted/pages_latest.json
+data/formatted/url_audit.json
+data/formatted/discovered_urls.json
+data/formatted/ingest_manifest.json
+
+# Logs and local runtime
+*.log
+logs/
+
+# Gradio / local UI cache
+.gradio/

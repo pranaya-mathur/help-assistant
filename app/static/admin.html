@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>MobCoder AI Assistant — Ops Portal</title>
+<style>
+  :root {
+    --bg: #0b1220; --panel: #101c33; --card: #ffffff; --border: #e2e8f0;
+    --text: #0f172a; --text-dim: #64748b; --primary: #4f7cff;
+    --positive: #16a34a; --negative: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f4f6fb; color: var(--text);
+  }
+  header {
+    background: linear-gradient(135deg, var(--bg) 0%, var(--panel) 55%, #2a3f6b 130%);
+    color: #fff; padding: 20px 28px; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  header h1 { font-size: 17px; margin: 0; font-weight: 600; }
+  header p { margin: 4px 0 0; font-size: 12.5px; color: rgba(255,255,255,.65); }
+  .auth-bar {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .auth-bar input {
+    padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08); color: #fff; font-size: 13px; min-width: 160px;
+  }
+  .auth-bar input::placeholder { color: rgba(255,255,255,.5); }
+  .auth-bar button {
+    padding: 8px 16px; border-radius: 8px; border: none; background: var(--primary);
+    color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .auth-bar button:hover { filter: brightness(1.08); }
+  main { padding: 24px 28px 60px; max-width: 1200px; margin: 0 auto; }
+  .status {
+    font-size: 13px; color: var(--text-dim); margin-bottom: 18px; padding: 10px 14px;
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+  }
+  .status.err { color: var(--negative); border-color: #fecaca; background: #fef2f2; }
+  .status.ok { color: var(--positive); border-color: #bbf7d0; background: #f0fdf4; }
+  .stat-row { display: flex; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+  .stat-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px;
+    min-width: 120px; flex: 1;
+  }
+  .stat-card .num { font-size: 26px; font-weight: 700; }
+  .stat-card .label { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+  section { margin-bottom: 32px; }
+  section h2 {
+    font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-dim);
+    margin: 0 0 12px;
+  }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--border); }
+  th, td { text-align: left; padding: 10px 12px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  th { background: #f8fafc; font-weight: 600; color: var(--text-dim); font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: .03em; }
+  tr:last-child td { border-bottom: none; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; }
+  .pill.up { background: #f0fdf4; color: var(--positive); }
+  .pill.down { background: #fef2f2; color: var(--negative); }
+  .empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 13px; }
+  .muted { color: var(--text-dim); }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>MobCoder AI Assistant — Ops Portal</h1>
+    <p>Read-only view of leads and feedback. Requires <code>INTERNAL_API_KEY</code>.</p>
+  </div>
+  <div class="auth-bar">
+    <input id="apiBase" placeholder="API base (blank = same origin)" />
+    <input id="internalKey" type="password" placeholder="Internal key" />
+    <button id="loadBtn">Load</button>
+  </div>
+</header>
+
+<main>
+  <div id="status" class="status">Enter your internal key and click Load. Nothing loads automatically — this page never stores your key beyond the current browser tab.</div>
+
+  <div class="stat-row" id="statCards" style="display:none;">
+    <div class="stat-card"><div class="num" id="statTotal">–</div><div class="label">Feedback total</div></div>
+    <div class="stat-card"><div class="num" id="statPositive">–</div><div class="label">👍 Positive</div></div>
+    <div class="stat-card"><div class="num" id="statNegative">–</div><div class="label">👎 Negative</div></div>
+    <div class="stat-card"><div class="num" id="statScore">–</div><div class="label">Score</div></div>
+    <div class="stat-card"><div class="num" id="statLeads">–</div><div class="label">Leads captured</div></div>
+  </div>
+
+  <section>
+    <h2>Recent leads</h2>
+    <div id="leadsWrap"><div class="empty">Not loaded yet.</div></div>
+  </section>
+
+  <section>
+    <h2>Recent feedback</h2>
+    <div id="feedbackWrap"><div class="empty">Not loaded yet.</div></div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var statusEl = document.getElementById("status");
+  var loadBtn = document.getElementById("loadBtn");
+  var apiBaseInput = document.getElementById("apiBase");
+  var keyInput = document.getElementById("internalKey");
+
+  // Never persisted to localStorage — sessionStorage only, cleared when the tab closes.
+  apiBaseInput.value = sessionStorage.getItem("mc_admin_api_base") || "";
+  keyInput.value = sessionStorage.getItem("mc_admin_key") || "";
+
+  function setStatus(msg, kind) {
+    statusEl.textContent = msg;
+    statusEl.className = "status" + (kind ? " " + kind : "");
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function apiFetch(path) {
+    var base = (apiBaseInput.value || "").trim().replace(/\/+$/, "");
+    var url = (base || "") + "/api/v1" + path;
+    return fetch(url, { headers: { "X-Internal-Key": keyInput.value.trim() } }).then(function (res) {
+      if (res.status === 401) throw new Error("Unauthorized — check the internal key.");
+      if (res.status === 404) throw new Error("Not found — INTERNAL_API_KEY may be unset on the server.");
+      if (!res.ok) throw new Error("Request failed (" + res.status + ")");
+      return res.json();
+    });
+  }
+
+  function renderLeads(records) {
+    var wrap = document.getElementById("leadsWrap");
+    if (!records.length) {
+      wrap.innerHTML = '<div class="empty">No leads captured yet.</div>';
+      return;
+    }
+    var rows = records.map(function (r) {
+      var p = r.lead_profile || {};
+      return "<tr>" +
+        "<td>" + esc(p.name || "—") + "</td>" +
+        "<td>" + esc(p.email || "—") + "</td>" +
+        "<td>" + esc(p.company || "—") + "</td>" +
+        "<td>" + esc(p.project_need || p.project_type || "—") + "</td>" +
+        "<td>" + esc(p.timeline || "—") + "</td>" +
+        "<td>" + esc(p.budget_band || "—") + "</td>" +
+        "<td>" + esc(r.stage || "—") + "</td>" +
+        "<td class=\"muted\">" + esc((r.updated_at || "").replace("T", " ").slice(0, 19)) + "</td>" +
+        "</tr>";
+    }).join("");
+    wrap.innerHTML =
+      "<table><thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Need</th>" +
+      "<th>Timeline</th><th>Budget</th><th>Stage</th><th>Updated</th></tr></thead>" +
+      "<tbody>" + rows + "</tbody></table>";
+  }
+
+  function renderFeedback(records) {
+    var wrap = document.getElementById("feedbackWrap");
+    if (!records.length) {
+      wrap.innerHTML = '<div class="empty">No feedback yet.</div>';
+      return;
+    }
+    var rows = records.map(function (r) {
+      var pill = r.rating === 1
+        ? '<span class="pill up">👍 up</span>'
+        : '<span class="pill down">👎 down</span>';
+      var userMsg = esc((r.user_message || "").slice(0, 80));
+      var botMsg = esc((r.assistant_message || "").slice(0, 100));
+      if (r.exact_match === false) {
+        userMsg += ' <span class="pill down" title="Could not confirm this is the exact rated turn — showing the most recent exchange in the session instead.">approx.</span>';
+      }
+      return "<tr>" +
+        "<td>" + pill + "</td>" +
+        "<td>" + esc(r.company || "—") + "</td>" +
+        "<td>" + esc(r.page_url || "—") + "</td>" +
+        "<td>" + userMsg + "</td>" +
+        "<td>" + botMsg + "</td>" +
+        "<td>" + esc(r.comment || "—") + "</td>" +
+        "<td class=\"muted\">" + esc((r.created_at || "").replace("T", " ").slice(0, 19)) + "</td>" +
+        "</tr>";
+    }).join("");
+    wrap.innerHTML =
+      "<table><thead><tr><th>Rating</th><th>Company</th><th>Page</th><th>User said</th>" +
+      "<th>Bot replied</th><th>Comment</th><th>When</th></tr></thead>" +
+      "<tbody>" + rows + "</tbody></table>";
+  }
+
+  function load() {
+    if (!keyInput.value.trim()) {
+      setStatus("Enter your internal key first.", "err");
+      return;
+    }
+    sessionStorage.setItem("mc_admin_api_base", apiBaseInput.value || "");
+    sessionStorage.setItem("mc_admin_key", keyInput.value || "");
+    setStatus("Loading…");
+    loadBtn.disabled = true;
+
+    Promise.all([
+      apiFetch("/feedback/stats"),
+      apiFetch("/feedback?limit=50"),
+      apiFetch("/leads?limit=100"),
+    ]).then(function (results) {
+      var stats = results[0], feedback = results[1], leads = results[2];
+      document.getElementById("statCards").style.display = "flex";
+      document.getElementById("statTotal").textContent = stats.total;
+      document.getElementById("statPositive").textContent = stats.positive;
+      document.getElementById("statNegative").textContent = stats.negative;
+      document.getElementById("statScore").textContent = (stats.score * 100).toFixed(0) + "%";
+      document.getElementById("statLeads").textContent = leads.total;
+      renderFeedback(feedback.records || []);
+      renderLeads(leads.records || []);
+      setStatus("Loaded " + new Date().toLocaleTimeString() + ".", "ok");
+    }).catch(function (err) {
+      setStatus(err.message || "Failed to load.", "err");
+    }).finally(function () {
+      loadBtn.disabled = false;
+    });
+  }
+
+  loadBtn.addEventListener("click", load);
+  keyInput.addEventListener("keydown", function (e) { if (e.key === "Enter") load(); });
+})();
+</script>
+</body>
+</html>

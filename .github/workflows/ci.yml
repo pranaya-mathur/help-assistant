@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: mobcoder
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: mobcoder_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Postgres migrations
+        env:
+          DATABASE_URL: postgresql://mobcoder:test@localhost:5432/mobcoder_test
+        run: python scripts/migrate_db.py
+
+      - name: Lint (ruff)
+        run: |
+          pip install ruff --quiet
+          ruff check app/ tests/ --select E,F,W --ignore E501 || true
+
+      - name: Run pytest
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || 'sk-test-placeholder' }}
+          DATABASE_URL: postgresql://mobcoder:test@localhost:5432/mobcoder_test
+        run: |
+          python -m pytest tests/ -q --tb=short --no-header \
+            --ignore=tests/test_eval_gate.py \
+            -x
+
+      - name: Eval gate (golden questions)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        if: ${{ env.OPENAI_API_KEY != '' && env.OPENAI_API_KEY != 'sk-test-placeholder' }}
+        run: |
+          python scripts/run_eval.py --min-pass-rate 0.90

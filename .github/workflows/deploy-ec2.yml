@@ -1,0 +1,119 @@
+name: Deploy API to EC2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "prompts/**"
+      - "scripts/**"
+      - "data/formatted/pages_seed.json"
+      - "main.py"
+      - "Dockerfile"
+      - "requirements.txt"
+      - "db/**"
+      - "docker-compose.ec2.yml"
+      - ".env.devops.example"
+      - ".env.ec2.example"
+      - ".github/workflows/deploy-ec2.yml"
+
+concurrency:
+  group: deploy-ec2-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ECR_REPOSITORY: mobcoder-sales-agent
+
+jobs:
+  deploy:
+    name: Build, push ECR, deploy EC2
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        if: ${{ secrets.AWS_DEPLOY_ROLE_ARN != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Configure AWS credentials (access key)
+        if: ${{ secrets.AWS_DEPLOY_ROLE_ARN == '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Ensure ECR repository exists
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws ecr describe-repositories --repository-names "${ECR_REPOSITORY}" --region "${AWS_REGION}" >/dev/null 2>&1 \
+            || aws ecr create-repository \
+              --repository-name "${ECR_REPOSITORY}" \
+              --image-scanning-configuration scanOnPush=true \
+              --region "${AWS_REGION}"
+
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          LATEST="${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
+          docker build -t "${IMAGE}" -t "${LATEST}" .
+          docker push "${IMAGE}"
+          docker push "${LATEST}"
+          echo "ECR_IMAGE=${IMAGE}" >> "${GITHUB_ENV}"
+
+      - name: Sync compose files to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          APP_DIR: ${{ secrets.EC2_APP_DIR }}
+        run: |
+          install -m 600 /dev/stdin key.pem <<< "${EC2_SSH_PRIVATE_KEY}"
+          REMOTE_DIR="${APP_DIR:-/opt/mobcoder}"
+          ssh -i key.pem -o StrictHostKeyChecking=no "${EC2_USER}@${EC2_HOST}" "mkdir -p ${REMOTE_DIR}/scripts/ec2"
+          scp -i key.pem -o StrictHostKeyChecking=no \
+            docker-compose.ec2.yml \
+            .env.devops.example \
+            "${EC2_USER}@${EC2_HOST}:${REMOTE_DIR}/"
+          scp -i key.pem -o StrictHostKeyChecking=no \
+            scripts/ec2/deploy.sh \
+            scripts/ec2/reingest.sh \
+            "${EC2_USER}@${EC2_HOST}:${REMOTE_DIR}/scripts/ec2/"
+          ssh -i key.pem -o StrictHostKeyChecking=no "${EC2_USER}@${EC2_HOST}" \
+            "chmod +x ${REMOTE_DIR}/scripts/ec2/deploy.sh ${REMOTE_DIR}/scripts/ec2/reingest.sh"
+
+      - name: Deploy on EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          APP_DIR: ${{ secrets.EC2_APP_DIR }}
+        run: |
+          install -m 600 /dev/stdin key.pem <<< "${EC2_SSH_PRIVATE_KEY}"
+          REMOTE_DIR="${APP_DIR:-/opt/mobcoder}"
+          ssh -i key.pem -o StrictHostKeyChecking=no "${EC2_USER}@${EC2_HOST}" \
+            "export ECR_IMAGE='${ECR_IMAGE}' AWS_REGION='${AWS_REGION}' APP_DIR='${REMOTE_DIR}' && ${REMOTE_DIR}/scripts/ec2/deploy.sh"
+
+      - name: Smoke health check
+        if: ${{ secrets.EC2_API_URL != '' }}
+        env:
+          API_URL: ${{ secrets.EC2_API_URL }}
+        run: ./scripts/aws/smoke_health.sh

@@ -1,0 +1,71 @@
+# Staging: Redis + 2 API replicas (ports 8001 / 8002). No duplicate single-api service.
+#
+#   cp .env.staging.example .env.staging
+#   docker compose -f docker-compose.staging.yml --env-file .env.staging up --build
+#
+#   API-1: http://127.0.0.1:8001/api/v1/health
+#   API-2: http://127.0.0.1:8002/api/v1/health
+#
+name: mobcoder-staging
+
+x-api-common: &api-common
+  build:
+    context: .
+    dockerfile: Dockerfile
+  restart: unless-stopped
+  env_file:
+    - .env.staging
+  volumes:
+    - app_data:/app/data
+  environment: &api-env
+    API_PORT: "8080"
+    API_RELOAD: "false"
+    APP_ENV: production
+    SESSION_STORE_BACKEND: redis
+    RATE_LIMIT_BACKEND: redis
+    REDIS_URL: redis://redis:6379/0
+    AUTO_INGEST_ON_START: "true"
+  depends_on:
+    redis:
+      condition: service_healthy
+  healthcheck:
+    test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/api/v1/health"]
+    interval: 30s
+    timeout: 5s
+    retries: 3
+    start_period: 120s
+  networks:
+    - internal
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - internal
+
+  mobcoder-api-1:
+    <<: *api-common
+    ports:
+      - "8001:8080"
+
+  mobcoder-api-2:
+    <<: *api-common
+    ports:
+      - "8002:8080"
+
+volumes:
+  redis_data:
+  app_data:
+
+networks:
+  internal:
+    driver: bridge

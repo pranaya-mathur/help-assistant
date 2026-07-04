@@ -1,0 +1,28 @@
+# GitLab CI — deploy dev widget (S3/CloudFront) when demo.html changes.
+# Set CI/CD variables in GitLab → Settings → CI/CD → Variables:
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
+#   WIDGET_S3_BUCKET (S3 bucket behind devweb-agent.mobcoder.ai)
+#   CLOUDFRONT_DISTRIBUTION_ID (optional, recommended)
+
+stages:
+  - deploy
+
+deploy-widget-dev:
+  stage: deploy
+  image:
+    name: amazon/aws-cli:2.22.35
+    entrypoint: [""]
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+      changes:
+        - widget/demo.html
+        - widget/mobcoder-chat.js
+        - widget/embed-snippet.html
+        - scripts/aws/deploy_widget_dev.sh
+        - .gitlab-ci.yml
+  script:
+    - chmod +x scripts/aws/deploy_widget_dev.sh
+    - ./scripts/aws/deploy_widget_dev.sh
+  environment:
+    name: dev-widget
+    url: https://devweb-agent.mobcoder.ai/

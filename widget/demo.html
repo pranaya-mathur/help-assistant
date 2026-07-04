@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mobcoder AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #2563eb;
+      --brand-strong: #1d4ed8;
+      --brand-ring: rgba(37,99,235,.28);
+      --ink: #0f172a;
+      --ease: cubic-bezier(.32,.72,.33,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; }
+    :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+    body {
+      font-family: "Inter", system-ui, sans-serif;
+      background: #eef2f7;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* ── FULL-PAGE CHAT SHELL ── */
+    #chat-shell {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 780px;
+      min-height: 100vh;
+      background: #ffffff;
+      box-shadow: 0 0 60px rgba(0,0,0,.10);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── HEADER ── */
+    #chat-header {
+      flex-shrink: 0;
+      background:
+        radial-gradient(120% 180% at 100% 0%, rgba(37,99,235,.55) 0%, transparent 55%),
+        linear-gradient(135deg, #0b1220 0%, #101c33 55%, #1d4ed8 130%);
+      padding: 18px 22px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    #chat-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      border: 2px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden; font-size: 20px;
+    }
+    #chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    #chat-header-info { flex: 1; min-width: 0; }
+    #chat-agent-name { color: #fff; font-weight: 700; font-size: 16px; }
+    #chat-status {
+      display: flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,.7); font-size: 12.5px; margin-top: 3px;
+    }
+    #status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #10b981; flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(16,185,129,.3);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.35;} }
+    #chat-header-right { display: flex; gap: 8px; }
+    .hdr-chip {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.85);
+      border-radius: 999px; padding: 5px 12px;
+      font-size: 12px; font-weight: 500;
+      cursor: pointer; font-family: inherit;
+      transition: background .15s;
+      text-decoration: none; display: inline-block;
+    }
+    .hdr-chip:hover { background: rgba(255,255,255,.22); }
+
+    /* ── MESSAGES ── */
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+    #chat-messages::-webkit-scrollbar { width: 5px; }
+    #chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+
+    /* date divider */
+    .date-divider {
+      text-align: center; font-size: 11px; color: #94a3b8;
+      position: relative; margin: 4px 0;
+    }
+    .date-divider::before, .date-divider::after {
+      content: ""; position: absolute; top: 50%;
+      width: calc(50% - 40px); height: 1px; background: #e2e8f0;
+    }
+    .date-divider::before { left: 0; }
+    .date-divider::after  { right: 0; }
+
+    /* rows */
+    .msg-row { display: flex; align-items: flex-end; gap: 10px; animation: msg-in .32s var(--ease) both; }
+    @keyframes msg-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .msg-row.user { flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: #f1f5f9; border: 1.5px solid #e2e8f0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0; overflow: hidden;
+    }
+    .msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .msg-col { display: flex; flex-direction: column; max-width: 76%; gap: 4px; }
+    .msg-row.user .msg-col { align-items: flex-end; }
+
+    .bubble {
+      padding: 12px 16px; border-radius: 18px;
+      font-size: 14px; line-height: 1.65; word-break: break-word;
+    }
+    .msg-row.user  .bubble { background: linear-gradient(135deg, var(--brand), var(--brand-strong)); color: #fff; border-bottom-right-radius: 5px; font-size: 14px; box-shadow: 0 2px 8px rgba(37,99,235,.24); }
+    .msg-row.bot   .bubble { background: #f1f5f9; color: #0f172a; border: 1px solid rgba(226,232,240,.6); border-bottom-left-radius: 5px; font-size: 14.5px; line-height: 1.72; letter-spacing: .005em; }
+    .bubble a { color: #2563eb; text-decoration: underline; font-weight: 500; }
+    .bubble a:hover { text-decoration: none; }
+    .msg-row.user .bubble a { color: #bfdbfe; }
+    .bubble strong { font-weight: 700; color: #0f172a; }
+    .msg-row.user .bubble strong { color: #fff; }
+    .bubble em { font-style: italic; color: #374151; }
+    .bubble code { background: rgba(37,99,235,.08); color: #1d4ed8; padding: 2px 6px; border-radius: 5px; font-family: "Fira Mono", Consolas, monospace; font-size: 13px; border: 1px solid rgba(37,99,235,.15); }
+    .bubble hr { border: none; border-top: 1px solid #e2e8f0; margin: 10px 0; }
+    .bubble ul { padding-left: 18px; margin-top: 4px; }
+    .bubble li { margin-bottom: 3px; }
+
+    /* markdown classes generated by renderMd() */
+    .mc-p, .bubble .mc-p  { margin: 0 0 9px; font-size: 14.5px; line-height: 1.72; }
+    .mc-p:last-child       { margin-bottom: 0; }
+    .mc-h                  { font-weight: 700; margin: 12px 0 5px; color: #0f172a; line-height: 1.3; }
+    h3.mc-h                { font-size: 15px; }
+    h4.mc-h                { font-size: 14.5px; }
+    h5.mc-h                { font-size: 14px; }
+    .mc-ul, .mc-ol         { padding-left: 20px; margin: 5px 0 9px; }
+    .mc-ul li, .mc-ol li   { margin-bottom: 5px; line-height: 1.65; font-size: 14.5px; }
+    .mc-bq                 { border-left: 3px solid #2563eb; padding: 6px 12px; color: #475569; margin: 7px 0; background: #f8fafc; border-radius: 0 6px 6px 0; font-style: italic; font-size: 14px; line-height: 1.6; }
+    .mc-gap                { height: 8px; display: block; }
+
+    .msg-ts { font-size: 10.5px; color: #94a3b8; padding: 0 4px; }
+
+    /* citations */
+    .citations { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+    .cite-link {
+      display: flex; align-items: center; gap: 7px;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+      padding: 5px 10px; font-size: 11.5px; color: #475569;
+      text-decoration: none; transition: background .12s;
+    }
+    .cite-link:hover { background: #f8fafc; }
+    .cite-dot { width: 6px; height: 6px; border-radius: 50%; background: #2563eb; flex-shrink: 0; }
+    .cite-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .cite-card {
+      display: block; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 10px 12px; text-decoration: none; color: inherit;
+    }
+    .cite-card-title { font-size: 12.5px; font-weight: 650; color: #0f172a; margin-bottom: 4px; }
+    .cite-card-snippet { font-size: 11.5px; color: #64748b; line-height: 1.45; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .cite-card-link { font-size: 11px; font-weight: 650; color: #2563eb; }
+
+    /* meta pills */
+    .meta-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .pill {
+      font-size: 10.5px; padding: 2px 9px; border-radius: 999px;
+      border: 1px solid #e2e8f0; color: #64748b; background: #fff; font-weight: 500;
+    }
+    .pill.score { color: #fff; border: none; }
+
+    /* typing */
+    #typing-row { display: flex; align-items: flex-end; gap: 10px; }
+    #typing-bubble {
+      display: none; background: #f1f5f9; border-radius: 18px;
+      border-bottom-left-radius: 4px; padding: 12px 16px;
+      align-items: center; gap: 5px;
+    }
+    #typing-bubble span {
+      width: 7px; height: 7px; border-radius: 50%; background: #94a3b8;
+      animation: typing 1.2s ease-in-out infinite;
+    }
+    #typing-bubble span:nth-child(2) { animation-delay: .2s; }
+    #typing-bubble span:nth-child(3) { animation-delay: .4s; }
+    @keyframes typing { 0%,80%,100%{transform:scale(1);opacity:.45;} 40%{transform:scale(1.35);opacity:1;} }
+
+    /* feedback */
+    .feedback-row { display: flex; align-items: center; gap: 4px; margin-top: 2px; padding: 0 4px; }
+    .feedback-row span { font-size: 10.5px; color: #94a3b8; margin-right: 2px; }
+    .fb-btn {
+      background: none; border: 1px solid #e2e8f0; border-radius: 6px;
+      padding: 2px 7px; font-size: 13px; cursor: pointer; line-height: 1;
+      transition: background .15s, border-color .15s;
+    }
+    .fb-btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
+    .fb-btn.active-pos { background: #dcfce7; border-color: #86efac; }
+    .fb-btn.active-neg { background: #fee2e2; border-color: #fca5a5; }
+    .fb-btn:disabled { opacity: .45; cursor: default; }
+
+    /* ── BOOK BANNER ── */
+    #book-banner {
+      display: none; margin: 0 20px 8px;
+      background: linear-gradient(135deg, #0f172a, #2563eb);
+      border-radius: 14px; padding: 14px 40px 14px 16px;
+      align-items: center; gap: 12px;
+      position: relative;
+    }
+    #book-banner.show { display: flex; }
+    .mc-dismiss {
+      position: absolute; top: 8px; right: 8px;
+      width: 26px; height: 26px; border: none; border-radius: 50%;
+      background: rgba(255,255,255,.2); color: #fff;
+      cursor: pointer; font-size: 18px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      font-family: inherit; padding: 0;
+    }
+    .mc-dismiss:hover { background: rgba(255,255,255,.35); }
+    #book-banner-text strong { color: #fff; font-size: 13.5px; font-weight: 700; display: block; }
+    #book-banner-text span  { color: rgba(255,255,255,.7); font-size: 12px; }
+    #book-btn {
+      background: #fff; color: #2563eb; border: none;
+      border-radius: 8px; padding: 8px 16px;
+      font-size: 12.5px; font-weight: 700; font-family: inherit;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      text-decoration: none; display: inline-block;
+    }
+
+    /* ── SUGGESTED REPLIES ── */
+    #suggest-wrap {
+      display: none; position: relative;
+      padding: 0 20px 8px; flex-shrink: 0;
+    }
+    #suggest-wrap.show { display: block; }
+    #suggest-wrap .mc-dismiss { top: 0; right: 12px; color: #64748b; background: #f1f5f9; }
+    #suggest-wrap .mc-dismiss:hover { background: #e2e8f0; }
+    #suggest-bar {
+      padding: 28px 0 0;
+      display: flex; flex-wrap: wrap; gap: 7px;
+    }
+    .s-chip {
+      font-size: 12.5px; padding: 6px 13px; border-radius: 999px;
+      border: 1.5px solid #bfdbfe; background: #eff6ff; color: #1d4ed8;
+      cursor: pointer; font-family: inherit; font-weight: 500;
+      transition: background .12s; white-space: nowrap;
+    }
+    .s-chip:hover { background: #dbeafe; }
+
+    /* ── LEAD MODAL (popup over chat) ── */
+    #lead-modal {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+    }
+    #lead-modal.show { display: flex; }
+    #lead-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(3px);
+    }
+    #lead-modal-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      max-height: min(85vh, 520px);
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 18px;
+      padding: 22px 20px 18px;
+      box-shadow: 0 24px 48px rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.06);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: leadModalIn .22s ease-out;
+    }
+    @keyframes leadModalIn {
+      from { opacity: 0; transform: scale(.94) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  .lead-modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .lead-modal-close:hover { background: #e2e8f0; color: #0f172a; }
+    #qualify-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f172a;
+      padding-right: 36px;
+      line-height: 1.35;
+    }
+    #qualify-subtitle { font-size: 13px; color: #475569; line-height: 1.45; }
+    .q-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    @media (max-width: 480px) { .q-row { grid-template-columns: 1fr; } }
+    .q-field input {
+      width: 100%; border: 1.5px solid #e2e8f0; border-radius: 9px;
+      padding: 10px 12px; font-size: 13px; font-family: inherit;
+      outline: none; transition: border-color .15s; background: #fff;
+    }
+    .q-field input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-ring); }
+    .q-field input::placeholder { color: #94a3b8; }
+    #qualify-submit {
+      background: #2563eb; color: #fff; border: none; border-radius: 10px;
+      padding: 12px; font-size: 14px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: opacity .15s; margin-top: 4px;
+    }
+    #qualify-submit:hover { opacity: .9; }
+    #qualify-privacy {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 11.5px; color: #64748b; line-height: 1.45;
+    }
+    #qualify-privacy input { margin-top: 3px; flex-shrink: 0; }
+    #qualify-error { font-size: 12px; color: #dc2626; display: none; }
+    #qualify-error.show { display: block; }
+
+    #quick-bar {
+      padding: 10px 20px 8px;
+      display: flex; flex-wrap: wrap; gap: 7px;
+      border-top: 1px solid #f1f5f9;
+      flex-shrink: 0;
+    }
+    .q-chip {
+      font-size: 12.5px; padding: 6px 13px; border-radius: 999px;
+      border: 1px solid #e2e8f0; background: #f8fafc;
+      color: #334155; cursor: pointer; font-family: inherit; font-weight: 500;
+      transition: background .12s, border-color .12s; white-space: nowrap;
+    }
+    .q-chip:hover { background: #eff6ff; border-color: #2563eb; color: #2563eb; }
+
+    /* ── INPUT ── */
+    #input-area {
+      flex-shrink: 0;
+      padding: 12px 16px 16px;
+      background: #fff;
+      border-top: 1px solid #e2e8f0;
+    }
+    #input-row {
+      display: flex; align-items: flex-end; gap: 10px;
+      background: #f8fafc; border: 1.5px solid #e2e8f0;
+      border-radius: 16px; padding: 8px 8px 8px 16px;
+      transition: border-color .15s;
+    }
+    #input-row:focus-within { border-color: var(--brand); background: #fff; box-shadow: 0 0 0 3px var(--brand-ring); }
+    #msg-input {
+      flex: 1; border: none; background: transparent;
+      font-size: 14px; font-family: inherit; outline: none;
+      resize: none; max-height: 100px; line-height: 1.5;
+      color: #0f172a;
+    }
+    #msg-input::placeholder { color: #94a3b8; }
+    #send-btn {
+      width: 38px; height: 38px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--brand), var(--brand-strong)); border: none; border-radius: 12px;
+      color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(37,99,235,.3);
+      transition: filter .15s, transform .15s, opacity .15s;
+    }
+    #send-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    #send-btn:active { transform: scale(.95); }
+    #send-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+    #input-hint {
+      font-size: 11px; color: #94a3b8; text-align: center;
+      margin-top: 8px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      #chat-messages { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+<div id="chat-shell">
+
+  <!-- HEADER -->
+  <div id="chat-header">
+    <div id="chat-avatar">🤖</div>
+    <div id="chat-header-info">
+      <div id="chat-agent-name">Mobcoder AI Assistant</div>
+      <div id="chat-status">
+        <div id="status-dot"></div>
+        Online · Replies instantly
+      </div>
+    </div>
+    <div id="chat-header-right">
+      <button type="button" class="hdr-chip" id="lead-hdr-btn">📋 Share details</button>
+      <a href="https://mobcoder.ai/contact-us" target="_blank" rel="noopener noreferrer" class="hdr-chip" id="book-hdr-btn">📅 Book a Call</a>
+    </div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div id="chat-messages">
+    <div class="date-divider">Today</div>
+    <!-- messages injected here -->
+    <div id="typing-row">
+      <div class="msg-avatar">🤖</div>
+      <div id="typing-bubble">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOK BANNER -->
+  <div id="book-banner">
+    <div id="book-banner-text">
+      <strong>Ready to talk to our team?</strong>
+      <span>Book a free 30-min discovery call</span>
+    </div>
+    <a id="book-btn" href="https://calendly.com/hello-mobcoder/mobcoderai" target="_blank" rel="noopener noreferrer">Book Now</a>
+    <button type="button" id="book-banner-close" class="mc-dismiss" aria-label="Dismiss">×</button>
+  </div>
+
+  <!-- SUGGESTED REPLIES -->
+  <div id="suggest-wrap">
+    <button type="button" id="suggest-close" class="mc-dismiss" aria-label="Dismiss suggestions">×</button>
+    <div id="suggest-bar"></div>
+  </div>
+
+  <!-- LEAD MODAL — popup over chat -->
+  <div id="lead-modal" role="dialog" aria-modal="true" aria-labelledby="qualify-title" aria-hidden="true">
+    <div id="lead-modal-backdrop"></div>
+    <div id="lead-modal-card">
+      <button type="button" id="lead-modal-close" class="lead-modal-close" aria-label="Close">×</button>
+      <div id="qualify-title">Tell us about your project</div>
+      <div id="qualify-subtitle">Share your details and our team will follow up within 1 business day.</div>
+      <div class="q-row">
+        <div class="q-field"><input id="q-name"    type="text"  placeholder="Your name *" autocomplete="name" /></div>
+        <div class="q-field"><input id="q-email"   type="email" placeholder="Work email *" autocomplete="email" /></div>
+      </div>
+      <div class="q-row">
+        <div class="q-field"><input id="q-company" type="text"  placeholder="Company" autocomplete="organization" /></div>
+        <div class="q-field"><input id="q-need"    type="text"  placeholder="What are you building?" /></div>
+      </div>
+      <label id="qualify-privacy">
+        <input id="q-consent" type="checkbox" />
+        <span>By sharing your details, you agree that Mobcoder AI may contact you about your inquiry. Please avoid sharing sensitive personal information in chat.</span>
+      </label>
+      <div id="qualify-error"></div>
+      <button type="button" id="qualify-submit">Send details →</button>
+    </div>
+  </div>
+
+  <!-- QUICK CHIPS -->
+  <div id="quick-bar">
+    <button type="button" class="q-chip" data-msg="What AI and agentic AI development services does Mobcoder AI offer?">🤖 AI Services</button>
+    <button type="button" class="q-chip" data-msg="Can you share Mobcoder AI case studies and examples of AI projects you've delivered?">📁 Case Studies</button>
+    <button type="button" class="q-chip" data-msg="How does Mobcoder AI approach pricing for custom software and AI projects?">💰 Pricing</button>
+    <button type="button" class="q-chip" data-href="https://calendly.com/hello-mobcoder/mobcoderai">📅 Book a Call</button>
+    <button type="button" class="q-chip" data-href="https://mobcoder.ai/contact-us">📧 Contact Us</button>
+  </div>
+
+  <!-- INPUT -->
+  <div id="input-area">
+    <div id="input-row">
+      <textarea id="msg-input" rows="1" placeholder="Ask us anything…"></textarea>
+      <button id="send-btn" aria-label="Send">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+    <div id="input-hint">Powered by Mobcoder AI · <a href="https://mobcoder.ai" target="_blank" style="color:#94a3b8;">mobcoder.ai</a></div>
+  </div>
+
+</div>
+
+<script>
+  /* ── CONFIG (development) ── */
+  const host = window.location.hostname;
+  const IS_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(host);
+  const IS_DEV_WIDGET = host === "devweb-agent.mobcoder.ai";
+  const LOCAL_API_BASE = "http://127.0.0.1:8001";
+  const DEV_API_BASE = "https://devapi-chatbot.mobcoder.ai";
+  // localhost → local API; dev S3 host → dev API; else production API
+  const API_BASE = IS_DEV_WIDGET
+    ? DEV_API_BASE
+    : IS_LOCAL
+      ? LOCAL_API_BASE
+      : "https://api.mobcoder.ai";
+  const API_URL      = API_BASE + "/api/v1/chat";
+  const STREAM_URL   = API_BASE + "/api/v1/chat/stream";
+  const EVENTS_URL   = API_BASE + "/api/v1/events";
+  const FEEDBACK_URL = API_BASE + "/api/v1/feedback";
+  const WIDGET_CONTEXT_URL = API_BASE + "/api/v1/widget-context";
+  const CALENDLY_URL = "https://calendly.com/hello-mobcoder/mobcoderai";
+  const CONTACT_URL  = "https://mobcoder.ai/contact-us";
+  const BOOKING_URL  = CALENDLY_URL;
+  // Streaming enabled — SSE tokens give instant perceived response
+  const USE_STREAM   = true;
+  const SHOW_DEBUG_SALES_STATE = IS_LOCAL || IS_DEV_WIDGET;
+  const AGENT_NAME   = "Mobcoder AI Assistant";
+  const AVATAR_HTML  = "🤖";
+  // Dev: simulate contact page; local uses same for retrieval context
+  const DEMO_PAGE_URL = IS_DEV_WIDGET
+    ? "https://devweb-agent.mobcoder.ai"
+    : "https://mobcoder.ai/contact-us";
+  const LEAD_PROMPT_AFTER_MESSAGES = 2;
+
+  let userMessageCount = 0;
+
+  function pageUrl() {
+    return DEMO_PAGE_URL || window.location.href;
+  }
+
+  function pageTitle() {
+    return String(document.title || "").substring(0, 200);
+  }
+
+  async function fetchWidgetContext() {
+    const q = new URLSearchParams({
+      page_url: pageUrl(),
+      page_title: pageTitle(),
+    });
+    try {
+      const res = await fetch(`${WIDGET_CONTEXT_URL}?${q}`);
+      if (!res.ok) throw new Error("widget context failed");
+      return await res.json();
+    } catch (e) {
+      const cat = pageCategory();
+      return {
+        page_category: cat,
+        opener: OPENERS[cat] || OPENERS.general,
+        starter_chips: [],
+      };
+    }
+  }
+
+  function pageCategory() {
+    const p = (() => {
+      try { return new URL(pageUrl()).pathname.toLowerCase(); } catch (e) { return ""; }
+    })();
+    if (/contact|contact-us|get-in-touch/.test(p)) return "contact";
+    if (/ai|agent/.test(p)) return "ai_agents";
+    if (/service/.test(p)) return "services";
+    return "general";
+  }
+
+  const OPENERS = {
+    contact: "Hi! I'm the Mobcoder AI Assistant 👋 I can answer questions about Mobcoder AI or help you schedule a discovery call with our team.",
+    ai_agents: "Hi! I'm the Mobcoder AI Assistant 👋 You're exploring our AI & agent solutions — what would you like to know?",
+    services: "Hi! I'm the Mobcoder AI Assistant 👋 I can help with Mobcoder AI services, engagement models, and pricing.",
+    general: "Hi! I'm the Mobcoder AI Assistant 👋 I'm here to help you learn about Mobcoder AI — our AI services, past work, pricing, or booking a discovery call.",
+  };
+
+  const STORAGE_SESSION = "mc_session_id";
+  const STORAGE_LEAD    = "mc_lead_profile";
+  const STORAGE_DISMISS_BOOK = "mc_dismiss_book_banner";
+
+  const SCORE_COLOR = { cold:"#64748b", warm:"#f59e0b", hot:"#ef4444", qualified:"#10b981" };
+  const STAGE_LABEL = { discover:"Exploring", educate:"Learning", qualify:"Qualifying", convert:"Ready to book" };
+
+  function uuid() {
+    if (crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      const r = Math.random()*16|0;
+      return (c==="x"?r:(r&0x3|0x8)).toString(16);
+    });
+  }
+  function getSession() {
+    let id = localStorage.getItem(STORAGE_SESSION);
+    if (!id) { id = uuid(); localStorage.setItem(STORAGE_SESSION, id); }
+    return id;
+  }
+  function getLead() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_LEAD)||"{}"); } catch { return {}; }
+  }
+  function saveLead(p) { localStorage.setItem(STORAGE_LEAD, JSON.stringify({...getLead(), ...p})); }
+
+  function hasKnownLead() {
+    const lead = getLead();
+    return !!(lead.email && lead.name);
+  }
+
+  function suppressProactive() {
+    try { localStorage.setItem("mc_proactive_suppressed", "1"); } catch (e) {}
+  }
+
+  function esc(s) {
+    return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function sanitizeBotMarkdown(text) {
+    var t = String(text || "");
+    t = t.replace(/\n+\*\*Sources\*\*[\s\S]*$/i, "");
+    t = t.replace(/^\s*\*\*Sources\*\*\s*$/gim, "");
+    return t.trim();
+  }
+
+  function dedupeCitations(cits) {
+    var seen = {}, out = [];
+    (cits || []).forEach(function(c) {
+      var u = String(c.source_url || "").replace(/\/$/, "").toLowerCase();
+      if (!u || seen[u]) return;
+      seen[u] = true;
+      out.push(c);
+    });
+    return out;
+  }
+
+  function renderBotContent(text) {
+    return renderMd(sanitizeBotMarkdown(text));
+  }
+
+  function renderMd(text) {
+    const lines = (text || "").split("\n");
+    const out = [];
+    let inList = false, inOl = false;
+
+    function flushList() {
+      if (inList) { out.push("</ul>"); inList = false; }
+      if (inOl)   { out.push("</ol>"); inOl = false; }
+    }
+
+    function linkify(s) {
+      s = String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+      s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+        (_,l,u) => `<a href="${u}" target="_blank" rel="noopener noreferrer">${l}</a>`);
+      s = s.replace(/(^|[\s(])(https?:\/\/[^\s<>"')]+)/g,
+        (_,p,u) => `${p}<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`);
+      s = s.replace(/\*\*([^*\n]+)\*\*/g,"<strong>$1</strong>");
+      s = s.replace(/\*([^*\n]+)\*/g,"<em>$1</em>");
+      s = s.replace(/`([^`]+)`/g,"<code>$1</code>");
+      return s;
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      if (/^---+$/.test(line.trim())) {
+        flushList(); out.push("<hr>"); continue;
+      }
+
+      const hm = line.match(/^(#{1,3})\s+(.+)/);
+      if (hm) {
+        flushList();
+        const lvl = Math.min(hm[1].length + 2, 5);
+        out.push(`<h${lvl} class="mc-h">${linkify(hm[2])}</h${lvl}>`);
+        continue;
+      }
+
+      const olm = line.match(/^\d+\.\s+(.+)/);
+      if (olm) {
+        if (inList) { out.push("</ul>"); inList = false; }
+        if (!inOl)  { out.push('<ol class="mc-ol">'); inOl = true; }
+        out.push(`<li>${linkify(olm[1])}</li>`);
+        continue;
+      }
+
+      const ulm = line.match(/^[\-\*•]\s+(.+)/);
+      if (ulm) {
+        if (inOl) { out.push("</ol>"); inOl = false; }
+        if (!inList) { out.push('<ul class="mc-ul">'); inList = true; }
+        out.push(`<li>${linkify(ulm[1])}</li>`);
+        continue;
+      }
+
+      if (line.trim() === "") {
+        flushList(); out.push('<div class="mc-gap"></div>'); continue;
+      }
+
+      const bqm = line.match(/^>\s+(.*)/);
+      if (bqm) {
+        flushList();
+        out.push(`<blockquote class="mc-bq">${linkify(bqm[1])}</blockquote>`);
+        continue;
+      }
+
+      flushList();
+      out.push(`<p class="mc-p">${linkify(line)}</p>`);
+    }
+    flushList();
+    return out.join("");
+  }
+  function nowTS() {
+    return new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  }
+
+  let _visitorMeta = null;
+  function parseUTMFromURL(url) {
+    const out = {};
+    try {
+      const params = new URLSearchParams(new URL(url).search);
+      ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"].forEach((k) => {
+        const v = params.get(k);
+        if (v) out[k] = v.substring(0, 256);
+      });
+    } catch (e) {}
+    return out;
+  }
+  function captureVisitorMeta() {
+    if (_visitorMeta) return _visitorMeta;
+    const utm = parseUTMFromURL(window.location.href);
+    _visitorMeta = {
+      timezone: (Intl && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : "") || "",
+      language: (navigator.language || navigator.userLanguage || "").substring(0, 32),
+      scroll_depth_pct: 0,
+      utm_source: utm.utm_source || "",
+      utm_medium: utm.utm_medium || "",
+      utm_campaign: utm.utm_campaign || "",
+      utm_term: utm.utm_term || "",
+      utm_content: utm.utm_content || "",
+      referrer: (document.referrer || "").substring(0, 2000),
+    };
+    return _visitorMeta;
+  }
+  function updateScrollDepth() {
+    try {
+      const scrolled = window.scrollY || document.documentElement.scrollTop || 0;
+      const total = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+      const pct = Math.min(100, Math.round((scrolled / total) * 100));
+      const meta = captureVisitorMeta();
+      meta.scroll_depth_pct = Math.max(meta.scroll_depth_pct || 0, pct);
+    } catch (e) {}
+  }
+  captureVisitorMeta();
+  window.addEventListener("scroll", updateScrollDepth, { passive: true });
+
+  function track(event, cta) {
+    updateScrollDepth();
+    const b = {
+      session_id: getSession(),
+      event,
+      page_url: pageUrl(),
+      visitor_meta: captureVisitorMeta(),
+    };
+    if (cta) b.cta = cta;
+    fetch(EVENTS_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).catch(()=>{});
+  }
+
+  /* ── ELEMENTS ── */
+  const msgList   = document.getElementById("chat-messages");
+  const typingRow = document.getElementById("typing-row");
+  const typingBub = document.getElementById("typing-bubble");
+  const sendBtn   = document.getElementById("send-btn");
+  const input     = document.getElementById("msg-input");
+  input.placeholder = "Ask " + AGENT_NAME + " anything…";
+  const sugWrap   = document.getElementById("suggest-wrap");
+  const sugBar    = document.getElementById("suggest-bar");
+  const qModal    = document.getElementById("lead-modal");
+  const qError    = document.getElementById("qualify-error");
+  const bookBan   = document.getElementById("book-banner");
+  const bookBtn   = document.getElementById("book-btn");
+
+  bookBtn.href = BOOKING_URL;
+  document.getElementById("book-hdr-btn").href = BOOKING_URL;
+
+  function openContactPage(source) {
+    track("booking_cta_clicked", source || "contact_link");
+    window.open(BOOKING_URL, "_blank", "noopener,noreferrer");
+  }
+
+  function openHrefPage(href, source) {
+    track("booking_cta_clicked", source || "contact_link");
+    window.open(href, "_blank", "noopener,noreferrer");
+  }
+
+  function shouldOpenContactPage(msg) {
+    if (!msg) return false;
+    const m = String(msg).toLowerCase();
+    return m.includes("discovery call")
+      || m.includes("schedule a call")
+      || m.includes("book a discovery")
+      || m.includes("book a call")
+      || /^i'd like to (schedule|book)/i.test(msg);
+  }
+
+  let isSending = false;
+
+  /* ── APPEND MSG ── */
+  function appendMsg(role, html, text, msgId) {
+    const row = document.createElement("div");
+    row.className = "msg-row " + role;
+
+    if (role === "bot") {
+      const av = document.createElement("div");
+      av.className = "msg-avatar";
+      av.innerHTML = AVATAR_HTML;
+      row.appendChild(av);
+    }
+
+    const col = document.createElement("div");
+    col.className = "msg-col";
+
+    const bub = document.createElement("div");
+    bub.className = "bubble";
+    if (html != null) bub.innerHTML = html;
+    else bub.textContent = text || "";
+
+    const ts = document.createElement("div");
+    ts.className = "msg-ts";
+    ts.textContent = nowTS();
+
+    col.appendChild(bub);
+    col.appendChild(ts);
+
+    if (role === "bot" && msgId) {
+      const fbRow = document.createElement("div");
+      fbRow.className = "feedback-row";
+      const fbLabel = document.createElement("span");
+      fbLabel.textContent = "Helpful?";
+      const thumbUp = document.createElement("button");
+      thumbUp.type = "button";
+      thumbUp.className = "fb-btn";
+      thumbUp.title = "Helpful";
+      thumbUp.textContent = "\u{1F44D}";
+      const thumbDown = document.createElement("button");
+      thumbDown.type = "button";
+      thumbDown.className = "fb-btn";
+      thumbDown.title = "Not helpful";
+      thumbDown.textContent = "\u{1F44E}";
+      fbRow.appendChild(fbLabel);
+      fbRow.appendChild(thumbUp);
+      fbRow.appendChild(thumbDown);
+      col.appendChild(fbRow);
+
+      function submitFeedback(rating) {
+        thumbUp.disabled = true;
+        thumbDown.disabled = true;
+        thumbUp.classList.remove("active-pos");
+        thumbDown.classList.remove("active-neg");
+        if (rating === 1) thumbUp.classList.add("active-pos");
+        else thumbDown.classList.add("active-neg");
+        fetch(FEEDBACK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: getSession(),
+            message_id: msgId,
+            rating,
+          }),
+        }).catch(() => {});
+        track(rating === 1 ? "feedback_positive" : "feedback_negative", msgId);
+      }
+      thumbUp.onclick = () => submitFeedback(1);
+      thumbDown.onclick = () => submitFeedback(-1);
+    }
+
+    row.appendChild(col);
+
+    msgList.insertBefore(row, typingRow);
+    msgList.scrollTop = msgList.scrollHeight;
+    return { row, bub, col };
+  }
+
+  function appendBot(text, msgId) { return appendMsg("bot", renderBotContent(text), null, msgId || null); }
+  function appendUser(text) { return appendMsg("user", null, text); }
+
+  function setTyping(on) {
+    typingBub.style.display = on ? "flex" : "none";
+    if (on) msgList.scrollTop = msgList.scrollHeight;
+  }
+  function setSending(on) {
+    isSending = on;
+    sendBtn.disabled = on;
+    input.disabled = on;
+  }
+  function dismissSuggestions() {
+    sugBar.innerHTML = "";
+    sugWrap.classList.remove("show");
+  }
+  function showSuggestions(items) {
+    sugBar.innerHTML = "";
+    const list = (items || []).filter(Boolean);
+    if (!list.length) { sugWrap.classList.remove("show"); return; }
+    list.forEach(t => {
+      const c = document.createElement("button");
+      c.className = "s-chip";
+      c.textContent = t;
+      c.onclick = () => {
+        track("cta_clicked", "suggested_reply");
+        if (shouldOpenContactPage(t)) {
+          openContactPage("suggested_reply");
+          return;
+        }
+        doSend(t);
+      };
+      sugBar.appendChild(c);
+    });
+    sugWrap.classList.add("show");
+  }
+  function dismissBookBanner() {
+    localStorage.setItem(STORAGE_DISMISS_BOOK, "1");
+    bookBan.classList.remove("show");
+  }
+  function showBookBanner(show) {
+    if (hasKnownLead()) return;
+    if (localStorage.getItem(STORAGE_DISMISS_BOOK)) return;
+    bookBan.classList.toggle("show", !!show);
+  }
+  function showQualify(show) {
+    qModal.classList.toggle("show", !!show);
+    qModal.setAttribute("aria-hidden", show ? "false" : "true");
+  }
+
+  function closeLeadForm() {
+    showQualify(false);
+    showQualifyError("");
+    sessionStorage.setItem("mc_lead_form_dismissed", "1");
+  }
+
+  function prefillLeadForm() {
+    const lead = getLead();
+    document.getElementById("q-name").value = lead.name || "";
+    document.getElementById("q-email").value = lead.email || "";
+    document.getElementById("q-company").value = lead.company || "";
+    document.getElementById("q-need").value = lead.project_need || "";
+    document.getElementById("q-consent").checked = lead.lead_consent === true;
+  }
+
+  function showQualifyError(msg) {
+    qError.textContent = msg || "";
+    qError.classList.toggle("show", !!msg);
+  }
+
+  function openLeadForm(opts) {
+    opts = opts || {};
+    prefillLeadForm();
+    if (opts.question) {
+      document.getElementById("qualify-title").textContent = opts.question;
+    } else if (opts.title) {
+      document.getElementById("qualify-title").textContent = opts.title;
+    } else {
+      document.getElementById("qualify-title").textContent = "Tell us about your project";
+    }
+    document.getElementById("qualify-subtitle").textContent =
+      opts.subtitle || "Share your details and our team will follow up within 1 business day.";
+    showQualifyError("");
+    showQualify(true);
+    track("qualify_shown");
+  }
+
+  function openLeadFormAuto(opts) {
+    // Respect an explicit dismissal — don't nag again after the user closed the form once.
+    if (sessionStorage.getItem("mc_lead_form_dismissed")) return;
+    openLeadForm(opts);
+  }
+
+  function maybePromptForLead() {
+    const lead = getLead();
+    if (lead.email) return;
+    if (userMessageCount < LEAD_PROMPT_AFTER_MESSAGES) return;
+    if (sessionStorage.getItem("mc_lead_prompted")) return;
+    sessionStorage.setItem("mc_lead_prompted", "1");
+    openLeadForm({
+      title: "Want our team to follow up?",
+      subtitle: "Leave your name and email — we'll reach out about your project.",
+    });
+  }
+
+  function validateLeadForm(profile) {
+    if (!profile.name) return "Please enter your name.";
+    if (!profile.email) return "Please enter your work email.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)) return "Please enter a valid email.";
+    if (!document.getElementById("q-consent").checked) return "Please confirm consent so we can contact you.";
+    return "";
+  }
+
+  function shouldUseCitationCards(cits) {
+    const cat = pageCategory();
+    if (cat === "case_studies") return true;
+    return (cits || []).some(c => {
+      const url = (c.source_url || "").toLowerCase();
+      return (c.page_category || "") === "case_studies" || url.includes("case-stud");
+    });
+  }
+
+  function renderCitationCards(cits, bubble) {
+    if (!cits || !cits.length) return;
+    const wrap = document.createElement("div");
+    wrap.className = "cite-cards";
+    dedupeCitations(cits).slice(0, 2).forEach(c => {
+      const card = document.createElement("a");
+      card.className = "cite-card";
+      card.href = c.source_url || "#";
+      card.target = "_blank";
+      card.rel = "noopener noreferrer";
+      const title = document.createElement("div");
+      title.className = "cite-card-title";
+      title.textContent = (c.page_title || "").trim() || "Case study";
+      const snippet = document.createElement("div");
+      snippet.className = "cite-card-snippet";
+      snippet.textContent = (c.snippet || c.citation_text || "").trim();
+      const link = document.createElement("div");
+      link.className = "cite-card-link";
+      link.textContent = "Read more";
+      card.appendChild(title);
+      if (snippet.textContent) card.appendChild(snippet);
+      card.appendChild(link);
+      wrap.appendChild(card);
+    });
+    bubble.appendChild(wrap);
+  }
+
+  function renderCitations(cits, bubble) {
+    if (!cits||!cits.length) return;
+    const wrap = document.createElement("div");
+    wrap.className = "citations";
+    dedupeCitations(cits).slice(0,3).forEach(c => {
+      const a = document.createElement("a");
+      a.className = "cite-link"; a.href = c.source_url;
+      a.target = "_blank"; a.rel = "noopener noreferrer";
+      const dot = document.createElement("span"); dot.className = "cite-dot";
+      a.appendChild(dot);
+      let label = (c.page_title || "").trim();
+      if (!label && c.source_url) {
+        try {
+          const parts = new URL(c.source_url).pathname.split("/").filter(Boolean);
+          label = parts.length ? parts[parts.length - 1].replace(/-/g, " ") : c.source_url;
+        } catch { label = c.source_url; }
+      }
+      a.appendChild(document.createTextNode(label || c.source_url || "Source"));
+      wrap.appendChild(a);
+    });
+    bubble.appendChild(wrap);
+  }
+
+  function renderSources(cits, bubble) {
+    if (shouldUseCitationCards(cits)) renderCitationCards(cits, bubble);
+    else renderCitations(cits, bubble);
+  }
+
+  function renderPills(stage, score, col) {
+    if (!SHOW_DEBUG_SALES_STATE) return;
+    if (!stage && !score) return;
+    const row = document.createElement("div");
+    row.className = "meta-pills";
+    if (stage && STAGE_LABEL[stage]) {
+      const p = document.createElement("span");
+      p.className = "pill";
+      p.textContent = "Stage: " + STAGE_LABEL[stage];
+      row.appendChild(p);
+    }
+    if (score) {
+      const p = document.createElement("span");
+      p.className = "pill score";
+      p.textContent = score.charAt(0).toUpperCase()+score.slice(1);
+      p.style.background = SCORE_COLOR[score]||"#64748b";
+      row.appendChild(p);
+    }
+    col.appendChild(row);
+  }
+
+  function handleData(data, bub, col) {
+    if (!data) return;
+    if (data.session_id) localStorage.setItem(STORAGE_SESSION, data.session_id);
+    if (data.lead_profile) {
+      saveLead(data.lead_profile);
+      const lp = data.lead_profile;
+      if (lp.email && lp.name) suppressProactive();
+    }
+    renderSources(data.citations, bub);
+    renderPills(data.stage, data.lead_score, col);
+    // Lead capture: inline qualify questions in chat only — no modal auto-popup.
+    // Users open the form manually via the header "Share details" button.
+    if (data.needs_contact_info) track("qualify_shown");
+    showSuggestions(data.suggested_replies);
+    if (data.ready_for_booking && !getLead().email) {
+      suppressProactive();
+      showBookBanner(true);
+    } else if (!data.ready_for_booking) {
+      showBookBanner(false);
+    }
+  }
+
+  /* ── STREAM ── */
+  async function consumeStream(res, bub, col) {
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = "", full = "", meta = null;
+    let firstToken = true;
+
+    // Debounce token DOM updates to avoid layout thrashing on fast streams
+    let pendingFlush = false;
+    function scheduleFlush() {
+      if (pendingFlush) return;
+      pendingFlush = true;
+      setTimeout(() => {
+        pendingFlush = false;
+        // On first token: hide typing dots and reveal the bubble
+        if (firstToken) {
+          firstToken = false;
+          setTyping(false);
+          bub.style.display = "";
+        }
+        bub.innerHTML = renderBotContent(full);
+        msgList.scrollTop = msgList.scrollHeight;
+      }, 40);
+    }
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const parts = buf.split("\n\n"); buf = parts.pop()||"";
+      for (const part of parts) {
+        if (!part.startsWith("data:")) continue;
+        const raw = part.slice(5).trim();
+        if (raw==="[DONE]") continue;
+        let ev; try { ev=JSON.parse(raw); } catch { continue; }
+        if (ev.type==="token"&&ev.content) {
+          full+=ev.content; scheduleFlush();
+        } else if (ev.type==="replace"&&ev.response) {
+          full=ev.response;
+          setTyping(false); firstToken=false; bub.style.display="";
+          bub.innerHTML=renderBotContent(full); msgList.scrollTop=msgList.scrollHeight;
+        } else if (ev.type==="done") {
+          if(ev.response){full=ev.response;}
+          setTyping(false); firstToken=false; bub.style.display="";
+          bub.innerHTML=renderBotContent(full); msgList.scrollTop=msgList.scrollHeight;
+          if (!meta) meta = {};
+          if (ev.response) meta.response = ev.response;
+        } else if (ev.type==="meta"&&ev.data) {
+          meta = Object.assign({}, meta || {}, ev.data);
+          if(ev.data.session_id) localStorage.setItem(STORAGE_SESSION,ev.data.session_id);
+        } else if (!ev.type&&ev.response) {
+          full=ev.response;
+          setTyping(false); firstToken=false; bub.style.display="";
+          bub.innerHTML=renderBotContent(full); msgList.scrollTop=msgList.scrollHeight; meta=ev;
+        }
+      }
+    }
+    // Final flush — ensure typing is hidden and bubble is visible
+    setTyping(false);
+    bub.style.display = "";
+    if (full) bub.innerHTML = renderBotContent(full);
+    return meta||{response:full};
+  }
+
+  /* ── SEND ── */
+  async function doSend(override) {
+    const text = (override||input.value).trim();
+    if (!text||isSending) return;
+    input.value=""; input.style.height="auto";
+    dismissSuggestions();
+    showQualify(false);
+
+    appendUser(text);
+    userMessageCount += 1;
+    setTyping(true); setSending(true);
+
+    const lead = getLead();
+    const reqId = uuid();
+    updateScrollDepth();
+    const payload = {
+      message: text,
+      session_id: getSession(),
+      request_id: reqId,
+      page_url: pageUrl(),
+      page_title: pageTitle(),
+      referrer: document.referrer || "",
+      lead_consent: lead.lead_consent === true,
+      expose_internal_sales_metadata: SHOW_DEBUG_SALES_STATE,
+      lead_profile: {
+        name: lead.name||"", email: lead.email||"", company: lead.company||"",
+        project_need: lead.project_need||"", timeline: "", budget_band: "",
+      },
+      visitor_meta: captureVisitorMeta(),
+      stream: USE_STREAM,
+    };
+
+    try {
+      const url = USE_STREAM ? STREAM_URL : API_URL;
+      const res = await fetch(url, {
+        method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)
+      });
+      if (res.status === 429) {
+        setTyping(false);
+        appendMsg("bot", null, "You're sending messages too quickly. Please wait a minute and try again.");
+        setSending(false);
+        return;
+      }
+      let data;
+      if (USE_STREAM && res.body && (res.headers.get("content-type")||"").includes("text/event-stream")) {
+        // Keep typing indicator on — consumeStream will hide it on first token
+        const {bub,col} = appendMsg("bot", "", null, reqId);
+        bub.style.display = "none"; // hidden until first token arrives
+        data = await consumeStream(res, bub, col);
+        handleData(data, bub, col);
+      } else {
+        data = await res.json();
+        setTyping(false);
+        if (!data.response) throw new Error("empty");
+        const botReqId = data.request_id || reqId;
+        const {bub,col} = appendMsg("bot", renderBotContent(data.response), null, botReqId);
+        handleData(data, bub, col);
+      }
+    } catch(e) {
+      setTyping(false);
+      appendMsg("bot", null, "Sorry, something went wrong. Please try again.");
+    }
+    setSending(false);
+    // Lead modal is manual-only (header "Share details") — never auto-nag after sends.
+  }
+
+  document.getElementById("lead-modal-close").onclick = closeLeadForm;
+  document.getElementById("lead-modal-backdrop").onclick = closeLeadForm;
+
+  /* ── QUALIFY SUBMIT ── */
+  document.getElementById("qualify-submit").onclick = () => {
+    const profile = {
+      name:    document.getElementById("q-name").value.trim(),
+      email:   document.getElementById("q-email").value.trim(),
+      company: document.getElementById("q-company").value.trim(),
+      project_need: document.getElementById("q-need").value.trim(),
+      lead_consent: document.getElementById("q-consent").checked,
+    };
+    const err = validateLeadForm(profile);
+    if (err) {
+      showQualifyError(err);
+      return;
+    }
+    saveLead(profile);
+    suppressProactive();
+    showQualify(false);
+    track("qualify_submitted");
+    const msg = profile.project_need
+      ? `My name is ${profile.name} from ${profile.company || "my company"}. Email: ${profile.email}. I'm building: ${profile.project_need}`
+      : `My name is ${profile.name} from ${profile.company || "my company"}. Email: ${profile.email}. I'd like to hear from the Mobcoder AI team.`;
+    doSend(msg);
+  };
+
+  document.getElementById("lead-hdr-btn").onclick = () => {
+    track("cta_clicked", "header_lead_form");
+    openLeadForm();
+  };
+
+  /* ── QUICK CHIPS ── */
+  document.querySelectorAll(".q-chip").forEach(c => {
+    c.onclick = () => {
+      track("cta_clicked", "quick_chip");
+      if (c.dataset.href) {
+        openHrefPage(c.dataset.href, c.textContent || "quick_chip");
+        return;
+      }
+      doSend(c.dataset.msg);
+    };
+  });
+
+  /* ── INPUT ── */
+  sendBtn.onclick = () => doSend();
+  input.addEventListener("input", () => {
+    input.style.height="auto";
+    input.style.height=Math.min(input.scrollHeight,100)+"px";
+  });
+  input.addEventListener("keydown", e => {
+    if (e.key==="Enter"&&!e.shiftKey) { e.preventDefault(); doSend(); }
+  });
+
+  window.addEventListener("keydown", e => {
+    if (e.key === "Escape" && qModal.classList.contains("show")) closeLeadForm();
+  });
+
+  /* ── OPENER ── */
+  document.getElementById("book-banner-close").onclick = dismissBookBanner;
+  document.getElementById("suggest-close").onclick = dismissSuggestions;
+
+  window.MobcoderChat = window.MobcoderChat || {};
+  window.MobcoderChat.onPageChange = function(url) {
+    if (url) window.MOBCODER_PAGE_URL = String(url);
+    if (userMessageCount > 0) return;
+    const bubbles = msgList.querySelectorAll(".msg-row.bot");
+    bubbles.forEach(b => b.remove());
+    dismissSuggestions();
+    fetchWidgetContext().then(ctx => {
+      const cat = ctx.page_category || pageCategory();
+      appendBot(ctx.opener || OPENERS[cat] || OPENERS.general);
+      if (ctx.starter_chips && ctx.starter_chips.length) showSuggestions(ctx.starter_chips);
+    });
+  };
+
+  window.addEventListener("DOMContentLoaded", async () => {
+    track("widget_opened");
+    const cat = pageCategory();
+    document.title = cat === "contact"
+      ? "Contact Us | MobCoder AI Assistant"
+      : "MobCoder AI Assistant";
+    setTimeout(async () => {
+      const ctx = await fetchWidgetContext();
+      appendBot(ctx.opener || OPENERS[cat] || OPENERS.general);
+      if (ctx.starter_chips && ctx.starter_chips.length) {
+        showSuggestions(ctx.starter_chips);
+      }
+    }, 400);
+  });
+</script>
+</body>
+</html>

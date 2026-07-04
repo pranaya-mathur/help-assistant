@@ -1,0 +1,17 @@
+<!--
+  Mobcoder AI website chat — copy into mobcoder.ai before </body>
+
+  Pilot API: set MOBCODER_CHAT_API_URL to devapi-chatbot until api.mobcoder.ai is live.
+  Production: omit MOBCODER_CHAT_API_URL on mobcoder.ai — mobcoder-chat.js auto-detects api.mobcoder.ai.
+-->
+<script>
+  window.MOBCODER_CHAT_API_URL = "https://devapi-chatbot.mobcoder.ai/api/v1/chat";
+  window.MOBCODER_CALENDLY_URL = "https://calendly.com/hello-mobcoder/mobcoderai";
+  window.MOBCODER_CONTACT_URL  = "https://mobcoder.ai/contact-us";
+  window.MOBCODER_COMPANY_NAME = "Mobcoder AI";
+  window.MOBCODER_AGENT_NAME   = "Mobcoder AI Assistant";
+  window.MOBCODER_CHAT_STREAM  = true;
+  window.MOBCODER_AUTO_OPEN_DELAY_SECONDS = 45;
+  window.MOBCODER_SHOW_DEBUG_SALES_STATE = false;
+</script>
+<script src="https://devweb-agent.mobcoder.ai/mobcoder-chat.js" defer></script>

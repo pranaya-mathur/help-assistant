@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bot Preview — Mobcoder AI Assistant</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body {
+      background:
+        radial-gradient(60% 50% at 50% 0%, rgba(37,99,235,.08) 0%, transparent 70%),
+        #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+  <!-- Nothing here on purpose — this page exists only to preview the bot UI. -->
+  <script>
+    window.MOBCODER_CHAT_API_URL = "http://127.0.0.1:8001/api/v1/chat";
+    window.MOBCODER_CALENDLY_URL = "https://calendly.com/hello-mobcoder/mobcoderai";
+    window.MOBCODER_CONTACT_URL  = "https://mobcoder.ai/contact-us";
+    window.MOBCODER_COMPANY_NAME = "Mobcoder AI";
+    window.MOBCODER_AGENT_NAME   = "Mobcoder AI Assistant";
+    window.MOBCODER_CHAT_STREAM  = true;
+    window.MOBCODER_AUTO_OPEN_DELAY_SECONDS = 0;
+  </script>
+  <script src="mobcoder-chat.js" defer></script>
+  <script>
+    // Auto-open the panel so the bot is visible immediately.
+    var _t = setInterval(function () {
+      var fab = document.getElementById("mc-fab");
+      if (fab) { clearInterval(_t); fab.click(); }
+    }, 100);
+  </script>
+</body>
+</html>

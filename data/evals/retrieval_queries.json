@@ -1,0 +1,247 @@
+[
+  {
+    "id": "ai_rag_001",
+    "query": "Can MobCoder build a RAG chatbot for internal documents?",
+    "expected_keywords_any": ["rag", "chatbot", "internal documents", "ai"],
+    "expected_source_url_contains_any": ["/ai", "/services", "/agent", "/rag"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver", "in-sydney"],
+    "expected_category": "ai_agents",
+    "expected_source_hint": "AI",
+    "notes": "Exact RAG and chatbot query for enterprise knowledge assistants."
+  },
+  {
+    "id": "rag_typo_pilot",
+    "query": "I am lookin a soultion based out of RAG",
+    "expected_keywords_any": ["rag", "ai", "solution", "retrieval"],
+    "expected_source_url_contains_any": ["/ai", "/services", "/agent", "/rag"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver", "in-sydney"],
+    "expected_category": "ai_agents",
+    "notes": "Messy typo query — must not cite contact or geo SEO pages."
+  },
+  {
+    "id": "ai_agentic_002",
+    "query": "Do you work with LangGraph or agentic AI?",
+    "expected_keywords_any": ["langgraph", "agentic", "ai agent", "agents"],
+    "expected_source_url_contains_any": ["/ai", "/services", "/agent"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "ai_agents",
+    "expected_source_hint": "AI",
+    "notes": "Tests exact LangGraph and agentic AI recall."
+  },
+  {
+    "id": "healthcare_hipaa_003",
+    "query": "Do you build HIPAA compliant healthcare AI?",
+    "expected_keywords_any": ["hipaa", "healthcare", "compliant", "ai"],
+    "expected_source_url_contains_any": ["/ai", "/health", "/services"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "ai_agents",
+    "expected_source_hint": "healthcare",
+    "notes": "Compliance-heavy exact keyword query."
+  },
+  {
+    "id": "healthcare_app_004",
+    "query": "Can MobCoder help with healthcare software development?",
+    "expected_keywords_any": ["healthcare", "software", "development", "app"],
+    "expected_source_url_contains_any": ["/service", "/health", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "healthcare",
+    "notes": "Broader healthcare software query."
+  },
+  {
+    "id": "fintech_005",
+    "query": "Do you build fintech apps?",
+    "expected_keywords_any": ["fintech", "financial", "app", "software"],
+    "expected_source_url_contains_any": ["/service", "/fintech", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "fintech",
+    "notes": "Exact fintech capability query."
+  },
+  {
+    "id": "mobile_flutter_006",
+    "query": "Do you have experience with Flutter mobile apps?",
+    "expected_keywords_any": ["flutter", "mobile", "app", "apps"],
+    "expected_source_url_contains_any": ["/service", "/mobile", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "mobile",
+    "notes": "Exact Flutter mobile query."
+  },
+  {
+    "id": "mobile_react_native_007",
+    "query": "Can I hire dedicated React Native developers?",
+    "expected_keywords_any": ["react native", "dedicated", "developers", "mobile"],
+    "expected_source_url_contains_any": ["/service", "/mobile", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "mobile",
+    "notes": "Combines staffing and exact mobile framework terms."
+  },
+  {
+    "id": "web_app_008",
+    "query": "Can MobCoder build a web app for my business?",
+    "expected_keywords_any": ["web", "app", "business", "development"],
+    "expected_source_url_contains_any": ["/service", "/web", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "web",
+    "notes": "General web application development query."
+  },
+  {
+    "id": "enterprise_009",
+    "query": "Do you build enterprise software platforms?",
+    "expected_keywords_any": ["enterprise", "software", "platform", "development"],
+    "expected_source_url_contains_any": ["/service", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "enterprise",
+    "notes": "Enterprise platform query."
+  },
+  {
+    "id": "staff_aug_010",
+    "query": "Do you provide staff augmentation?",
+    "expected_keywords_any": ["staff augmentation", "staff", "team", "developers"],
+    "expected_source_url_contains_any": ["/service", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "staff",
+    "notes": "Exact staffing query."
+  },
+  {
+    "id": "dedicated_devs_011",
+    "query": "Can I hire dedicated developers from MobCoder?",
+    "expected_keywords_any": ["dedicated", "developers", "team", "hire"],
+    "expected_source_url_contains_any": ["/service", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "dedicated",
+    "notes": "Dedicated development team query."
+  },
+  {
+    "id": "api_integration_012",
+    "query": "Can you integrate with Salesforce or HubSpot APIs?",
+    "expected_keywords_any": ["api", "integration", "salesforce", "hubspot"],
+    "expected_source_url_contains_any": ["/service", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "integration",
+    "notes": "API integration and CRM query."
+  },
+  {
+    "id": "cloud_devops_013",
+    "query": "What kind of cloud deployment support do you provide?",
+    "expected_keywords_any": ["cloud", "deployment", "devops", "support"],
+    "expected_source_url_contains_any": ["/service", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "cloud",
+    "notes": "Cloud and DevOps support query."
+  },
+  {
+    "id": "case_studies_014",
+    "query": "Do you have case studies for AI or mobile apps?",
+    "expected_keywords_any": ["case study", "case studies", "portfolio", "ai", "mobile"],
+    "expected_source_url_contains_any": ["/case", "/portfolio", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "case_studies",
+    "expected_source_hint": "case",
+    "notes": "Portfolio evidence query."
+  },
+  {
+    "id": "discovery_call_015",
+    "query": "How does a discovery call work?",
+    "expected_keywords_any": ["discovery", "call", "consultation", "contact"],
+    "expected_source_url_contains_any": ["mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["in-denver"],
+    "expected_category": "contact",
+    "expected_source_hint": "contact",
+    "notes": "Engagement model and booking query."
+  },
+  {
+    "id": "pricing_016",
+    "query": "How much does a MobCoder project cost?",
+    "expected_keywords_any": ["cost", "pricing", "budget", "project"],
+    "expected_source_url_contains_any": ["/service", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "pricing",
+    "notes": "Budget and pricing discovery query."
+  },
+  {
+    "id": "maintenance_017",
+    "query": "Can you help with an existing app maintenance project?",
+    "expected_keywords_any": ["maintenance", "support", "existing app", "project"],
+    "expected_source_url_contains_any": ["/service", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "services",
+    "expected_source_hint": "support",
+    "notes": "Maintenance and support query."
+  },
+  {
+    "id": "sales_bot_018",
+    "query": "Can you build a custom sales chatbot like this one?",
+    "expected_keywords_any": ["sales", "chatbot", "custom", "ai"],
+    "expected_source_url_contains_any": ["/ai", "/service", "/agent"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "ai_agents",
+    "expected_source_hint": "chatbot",
+    "notes": "AI sales assistant query."
+  },
+  {
+    "id": "llm_guardrails_019",
+    "query": "How do you handle LLM hallucination and guardrails?",
+    "expected_keywords_any": ["llm", "hallucination", "guardrails", "evaluation"],
+    "expected_source_url_contains_any": ["/ai", "/service", "mobcoder.ai"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "ai_agents",
+    "expected_source_hint": "guardrails",
+    "notes": "LLM governance and safety query."
+  },
+  {
+    "id": "ai_process_020",
+    "query": "What is your AI agent development process?",
+    "expected_keywords_any": ["ai agent", "process", "development", "automation"],
+    "expected_source_url_contains_any": ["/ai", "/service", "/agent"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver"],
+    "expected_category": "ai_agents",
+    "expected_source_hint": "agent",
+    "notes": "Semantic process query for AI agents."
+  },
+  {
+    "id": "rag_typo_021",
+    "query": "need rag chatbto for internal docs",
+    "expected_keywords_any": ["rag", "chatbot", "internal"],
+    "expected_source_url_contains_any": ["/ai", "/services", "/agent"],
+    "forbidden_source_url_contains_any": ["contact-us", "in-denver", "in-sydney"],
+    "expected_category": "ai_agents",
+    "notes": "Additional messy typo variant."
+  },
+  {
+    "id": "pilot_supply_chain_copilot",
+    "query": "Can you help me with a Co-Pilot for SupplyChain department",
+    "expected_keywords_any": ["co-pilot", "copilot", "supply chain", "workflow", "agent"],
+    "expected_source_url_contains_any": ["/generative-ai-development-services", "/services/agentic-ai", "/services/ai-"],
+    "forbidden_source_url_contains_any": ["/blog/", "in-denver", "in-sydney"],
+    "expected_category": "ai_agents",
+    "notes": "Pilot widget query — must not force RAG; cite capabilities/agentic pages."
+  },
+  {
+    "id": "pilot_case_studies",
+    "query": "Can you share Mobcoder AI case studies?",
+    "expected_keywords_any": ["case stud", "gov", "tifin", "nap", "client"],
+    "expected_source_url_contains_any": ["/case-stud"],
+    "forbidden_source_url_contains_any": ["/blog/", "in-denver"],
+    "expected_category": "case_studies",
+    "notes": "Pilot widget query — real case study pages only, no blog mis-tags."
+  },
+  {
+    "id": "pilot_pricing",
+    "query": "What about the Pricing?",
+    "expected_keywords_any": ["pricing", "engagement", "quote", "cost", "model"],
+    "expected_source_url_contains_any": ["/generative-ai-development-services", "/services/"],
+    "forbidden_source_url_contains_any": ["/blog/", "in-denver"],
+    "expected_category": "ai_agents",
+    "notes": "Pilot pricing follow-up — capabilities overview, not random blogs."
+  }
+]

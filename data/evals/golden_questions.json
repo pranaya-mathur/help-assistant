@@ -1,0 +1,411 @@
+[
+  {
+    "id": "ai_services",
+    "question": "What AI and agentic AI services does MobCoder offer?",
+    "must_contain_any": [
+      "MobCoder",
+      "AI"
+    ],
+    "must_not_contain": [
+      "I guarantee"
+    ],
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true,
+    "expect_intent": "help"
+  },
+  {
+    "id": "case_studies",
+    "question": "Tell me about MobCoder case studies or client work.",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true,
+    "expect_intent": "help"
+  },
+  {
+    "id": "process",
+    "question": "How does MobCoder work with clients on a typical project?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "must_not_contain": [
+      "100% guarantee"
+    ],
+    "require_grounding": true,
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "pricing",
+    "question": "How does MobCoder approach pricing?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "must_not_contain": [
+      "$999 fixed"
+    ],
+    "require_grounding": true,
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true,
+    "expect_intent": "sales"
+  },
+  {
+    "id": "sales_ai_agent",
+    "question": "We need to build an AI agent for customer support. Can you help?",
+    "must_contain_any": [
+      "MobCoder",
+      "AI",
+      "agent",
+      "support"
+    ],
+    "must_answer_before_qualify": true,
+    "expect_intent": "sales",
+    "require_mobcoder_citations": true
+  },
+  {
+    "id": "booking",
+    "question": "I'd like to schedule a discovery call with your team.",
+    "must_contain_any": [
+      "call",
+      "book",
+      "Calendly",
+      "discovery",
+      "schedule"
+    ],
+    "must_answer_before_qualify": true,
+    "expect_intent": "booking"
+  },
+  {
+    "id": "mobile",
+    "question": "Does MobCoder build mobile apps?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "off_topic",
+    "question": "What's the weather in Toronto today?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "must_not_contain": [
+      "sunny",
+      "rain",
+      "degrees"
+    ],
+    "must_answer_before_qualify": false
+  },
+  {
+    "id": "about",
+    "question": "Who is MobCoder and what do you specialize in?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "must_not_contain": [
+      "largest company in the world"
+    ],
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "team_aug",
+    "question": "Do you offer team augmentation or dedicated developers?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "no_false_booking_on_call_word",
+    "question": "Can you explain how you typically run discovery calls with new clients?",
+    "must_contain_any": [
+      "MobCoder",
+      "discovery",
+      "call"
+    ],
+    "expect_intent": "help",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "agentic_positioning",
+    "question": "What makes MobCoder different for agentic AI projects?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "engagement_model",
+    "question": "What engagement models does MobCoder offer for long-term partnerships?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "help",
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "web_dev",
+    "question": "Can MobCoder help us build a custom web platform?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "quote_request",
+    "question": "We need a quote for a 6-month AI product build.",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "competitor_mention",
+    "question": "How does MobCoder compare to offshore dev shops for AI work?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "must_not_contain": [
+      "terrible",
+      "worst",
+      "scam"
+    ],
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "budget_objection",
+    "question": "Our budget is tight — can MobCoder still help with an MVP chatbot?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "timeline_question",
+    "question": "We need something live in 8 weeks. Does MobCoder do fast-turnaround AI projects?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "tifin_case_study",
+    "question": "Tell me about MobCoder's Tifin or fintech case study work.",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "chatgptree",
+    "question": "What is ChatGPTree and how did MobCoder build it?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "agentic_ai_page",
+    "question": "What does MobCoder offer under agentic AI services?",
+    "must_contain_any": [
+      "MobCoder",
+      "AI"
+    ],
+    "expect_intent": "help",
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "hire_team",
+    "question": "We're looking to hire MobCoder as a development partner for our startup.",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "rfp",
+    "question": "We're sending an RFP — can MobCoder respond with a proposal?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "contact_general",
+    "question": "How can I contact MobCoder sales?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "capabilities_help",
+    "question": "What are MobCoder's core engineering capabilities?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "help",
+    "require_mobcoder_citations": true,
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "multi_turn_sales",
+    "multi_turn": true,
+    "messages": [
+      "Hi, we're exploring AI for our product.",
+      "We need a customer support agent integrated with our CRM.",
+      "Can MobCoder help us build that?"
+    ],
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "multi_turn_help_then_contact",
+    "multi_turn": true,
+    "messages": [
+      "What services does MobCoder offer?",
+      "Do you work with enterprises on agentic AI?"
+    ],
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "help",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "build_llm_app",
+    "question": "We want to build a GenAI app with guardrails. Can you help us implement it?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "offshore_comparison_sales",
+    "question": "We're comparing vendors for an AI agent — why should we pick MobCoder?",
+    "must_contain_any": [
+      "MobCoder"
+    ],
+    "expect_intent": "sales",
+    "must_not_contain": [
+      "offshore is bad"
+    ],
+    "must_answer_before_qualify": true
+  },
+  {
+    "id": "book_demo",
+    "question": "I'd like to book a demo with your sales team next week.",
+    "must_contain_any": [
+      "call",
+      "book",
+      "Calendly",
+      "schedule",
+      "demo"
+    ],
+    "expect_intent": "booking"
+  },
+  {
+    "id": "human_request_real_human",
+    "question": "I want to talk to a real human right now.",
+    "must_contain_any": [
+      "contact the team directly"
+    ],
+    "must_not_contain": [
+      "TIFIN",
+      "case study"
+    ]
+  },
+  {
+    "id": "human_request_connect_person",
+    "question": "Connect me to a person.",
+    "must_contain_any": [
+      "contact the team directly"
+    ],
+    "must_not_contain": [
+      "TIFIN",
+      "case study"
+    ]
+  },
+  {
+    "id": "frustrated_then_handoff",
+    "multi_turn": true,
+    "messages": [
+      "Why should I choose MobCoder over a cheap freelancer?",
+      "You keep giving vague answers. Connect me to a person."
+    ],
+    "must_contain_any": [
+      "contact the team directly"
+    ],
+    "must_not_contain": [
+      "What specific"
+    ]
+  },
+  {
+    "id": "nda_commitment_guard",
+    "question": "Do you sign NDAs before discussing project details?",
+    "must_contain_any": [
+      "team",
+      "call",
+      "contact"
+    ],
+    "must_not_contain": [
+      "Yes, we do sign NDAs",
+      "Yes, we sign NDAs"
+    ]
+  },
+  {
+    "id": "timeline_commitment_guard",
+    "question": "Can you guarantee delivery of a digital wallet app in exactly 4 months?",
+    "must_contain_any": [
+      "can't guarantee",
+      "cannot guarantee",
+      "can not guarantee",
+      "depend",
+      "team",
+      "discovery call"
+    ],
+    "must_not_contain": [
+      "we guarantee delivery",
+      "guaranteed delivery"
+    ]
+  },
+  {
+    "id": "graceful_unknown_team_size",
+    "question": "How big is your team exactly?",
+    "must_not_contain": [
+      "I don't have specific information",
+      "I don't know",
+      "I don't have information"
+    ],
+    "must_contain_any": [
+      "MobCoder",
+      "Mobcoder",
+      "team"
+    ]
+  },
+  {
+    "id": "frustration_offers_human_path",
+    "question": "This bot is useless and not helping at all. What services do you even offer?",
+    "must_contain_any": [
+      "reach the team directly",
+      "contact the team directly"
+    ]
+  }
+]

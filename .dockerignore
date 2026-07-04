@@ -1,0 +1,45 @@
+# Git and editor
+.git
+.gitignore
+.idea
+.vscode
+*.md
+!prompts/**/*.txt
+
+# Secrets (mount via env_file at runtime)
+.env
+.env.*
+!.env.example
+!.env.staging.example
+!.env.production.example
+
+# Python local
+.venv
+venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.mypy_cache
+.ruff_cache
+htmlcov
+.coverage
+*.egg-info
+
+# Local runtime data (use named volume in production)
+data/raw/
+data/chunks/
+data/embeddings/
+data/sessions/
+data/indexes/
+data/ingest/
+data/formatted/pages_latest.json
+data/formatted/url_audit.json
+data/formatted/discovered_urls.json
+data/formatted/ingest_manifest.json
+
+# Tests and CI (not needed in runtime image)
+tests/
+.github/
+
+# Widget demo is served by nginx container; JS bundle is copied via compose mount
+widget/demo.html
