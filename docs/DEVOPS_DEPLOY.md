@@ -188,6 +188,17 @@ Options:
 
 After successful ingest, set `AUTO_INGEST_ON_START=false` in `.env.production` and redeploy to avoid re-seeding on every restart.
 
+### Optional: Google Sheets + Chat (lead visibility)
+
+While HubSpot CRM is pending, add these to `.env.production` on EC2 (not in Terraform yet):
+
+| Variable | Guide |
+|----------|--------|
+| `GOOGLE_SHEETS_WEBHOOK_URL` | **[docs/GOOGLE_SHEETS_LEAD_LOG.md](GOOGLE_SHEETS_LEAD_LOG.md)** — upsert consenting leads to a sheet |
+| `GOOGLE_CHAT_WEBHOOK_URL` | **[docs/GOOGLE_CHAT_LEAD_ALERTS.md](GOOGLE_CHAT_LEAD_ALERTS.md)** — one-time hot-lead alert per session |
+
+Both require visitor **email** + **`lead_consent`**. Unset → silently disabled.
+
 ---
 
 ## 7. Go-live checklist

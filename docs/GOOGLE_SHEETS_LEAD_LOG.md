@@ -6,6 +6,8 @@ consenting leads only) into a Google Sheet via an Apps Script web app.
 Bucket distribution, lead trends, and top use cases come from native Sheets
 pivot tables/charts — no custom UI to build or host.
 
+For real-time hot-lead pings, see **[GOOGLE_CHAT_LEAD_ALERTS.md](GOOGLE_CHAT_LEAD_ALERTS.md)**.
+
 ## How it works
 
 ```
@@ -99,7 +101,10 @@ Copy the web app URL (`https://script.google.com/macros/s/…/exec`).
 GOOGLE_SHEETS_WEBHOOK_URL=https://script.google.com/macros/s/…/exec
 ```
 
-Add it to the environment locally and to Terraform secrets for staging/prod.
+Add it to `.env` locally and to `.env.production` on EC2 (see `.env.devops.example`).
+Terraform does not provision this URL yet — set it manually in the server env file.
+
+For real-time hot-lead pings (optional), see **[GOOGLE_CHAT_LEAD_ALERTS.md](GOOGLE_CHAT_LEAD_ALERTS.md)**.
 
 ## Suggested dashboard tabs (pivot tables)
 

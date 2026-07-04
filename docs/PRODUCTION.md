@@ -267,6 +267,26 @@ Qualified lead webhooks include lead intelligence fields plus request/session/pa
 
 The widget sends `lead_consent=true` only after the visitor submits the lead form after seeing the consent copy. Passive chat messages default to `false`.
 
+## Google Sheets lead log (optional)
+
+While HubSpot is pending, upsert consenting leads (email + `lead_consent`) into a Google Sheet via an Apps Script web app.
+
+| Variable | Description |
+|----------|-------------|
+| `GOOGLE_SHEETS_WEBHOOK_URL` | Apps Script web-app URL (`action: upsert_lead`) |
+
+Setup: **[docs/GOOGLE_SHEETS_LEAD_LOG.md](GOOGLE_SHEETS_LEAD_LOG.md)**. Rows refresh every turn (upsert by `session_id`). Not configured → silently disabled.
+
+## Google Chat human-review alerts (optional)
+
+One-time alert per session when `needs_human_review` is true and the visitor gave consent. Uses the same hot-lead threshold as `app/agent/routing.py`.
+
+| Variable | Description |
+|----------|-------------|
+| `GOOGLE_CHAT_WEBHOOK_URL` | Google Chat space incoming webhook URL |
+
+Setup: **[docs/GOOGLE_CHAT_LEAD_ALERTS.md](GOOGLE_CHAT_LEAD_ALERTS.md)**. Set in `.env.production` on EC2 (not in Terraform yet).
+
 ## Human escalation
 
 `POST /api/v1/escalate` accepts name, email, message, optional `session_id` and `page_url`. Dispatches to HubSpot with `source: "human_escalation"`. Widget config: `MOBCODER_ESCALATE_URL` (auto-derived from chat URL if omitted).

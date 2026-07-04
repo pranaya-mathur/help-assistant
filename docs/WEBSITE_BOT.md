@@ -10,8 +10,10 @@ This guide covers deploying the **Mobcoder AI website assistant** on [mobcoder.a
 | FastAPI (`/api/v1/chat`) | RAG answers + lead profiling |
 | Postgres sessions | Stored leads, analytics, conversation turns |
 | Calendly / contact URLs | Booking + contact CTAs |
+| Google Sheets (optional) | Live lead log for leadership — `GOOGLE_SHEETS_WEBHOOK_URL` |
+| Google Chat (optional) | One-time hot-lead alert — `GOOGLE_CHAT_WEBHOOK_URL` |
 
-Not required for v1 launch: HubSpot, Apollo, full admin portal (minimal **`/admin`** MVP exists for feedback + leads). Ticket systems optional.
+Not required for v1 launch: HubSpot, Apollo, full admin portal (minimal **`/admin`** MVP exists for feedback + leads). Google Sheets/Chat are optional interim visibility while CRM is wired. Ticket systems optional.
 
 ## 1. API (backend)
 
@@ -29,6 +31,9 @@ ENABLE_CHAT_STREAMING=true
 CALENDLY_URL=https://calendly.com/hello-mobcoder/mobcoderai
 CONTACT_PAGE_URL=https://mobcoder.ai/contact-us
 CORS_ALLOWED_ORIGINS=https://mobcoder.ai,https://www.mobcoder.ai,https://devweb-agent.mobcoder.ai
+# Optional — see docs/GOOGLE_SHEETS_LEAD_LOG.md and docs/GOOGLE_CHAT_LEAD_ALERTS.md
+# GOOGLE_SHEETS_WEBHOOK_URL=
+# GOOGLE_CHAT_WEBHOOK_URL=
 ```
 
 **Pilot API:** `https://devapi-chatbot.mobcoder.ai`  

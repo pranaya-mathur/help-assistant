@@ -34,7 +34,9 @@ flowchart TB
     Enrich["post_response.enrich_state"]
     Intent["classify_intent"]
     Profile["update_lead_profile"]
-    Enrich --> Intent --> Profile
+    Route["decide_routing"]
+    Persist["persist_qualification"]
+    Enrich --> Intent --> Profile --> Route --> Persist
   end
 
   subgraph storage [Storage]
@@ -49,6 +51,8 @@ flowchart TB
     Summary["conversation_summary"]
     CRM["dispatch_qualified_lead_async"]
     HubSpot["HubSpot webhook"]
+    Sheets["Google Sheets lead log"]
+    ChatAlert["Google Chat alert"]
     Analytics["analytics events"]
   end
 
@@ -65,6 +69,8 @@ flowchart TB
   ChatService --> SessionPostgres
   ChatService --> SessionRedis
   ChatService --> Enrich
+  Persist --> Sheets
+  Persist --> ChatAlert
   ChatService --> Summary
   Summary --> CRM
   CRM --> HubSpot
@@ -73,7 +79,7 @@ flowchart TB
 
 > Diagrams use [Mermaid](https://mermaid.js.org/) fences (` ```mermaid `). They render on GitHub and in editors with Mermaid support.
 
-> **Retrieve-first hot path.** Streaming (`POST /chat/stream`) and the LangGraph sync path run `safety_check → retrieve_sources → generate → validate → qualify → final`. Intent classification and lead profile LLM extraction run **after** the response via `app/agent/post_response.py` (Phase 2 sales). Pilot help mode (`OPERATING_MODE=help`) skips qualify noise and profile LLM on the hot path.
+> **Retrieve-first hot path.** Streaming (`POST /chat/stream`) and the LangGraph sync path run `safety_check → retrieve_sources → generate → validate → qualify → final`. `build_final_response` also runs rule-based lead scoring and `decide_routing` so the visitor sees the right CTA. Intent classification and lead profile LLM extraction run **after** the response via `app/agent/post_response.py` (Phase 2 sales), which recomputes routing and persists to session metadata, Google Sheets, and Google Chat when configured. Pilot help mode (`OPERATING_MODE=help`) skips qualify noise and profile LLM on the hot path.
 
 ## What it does
 
@@ -251,7 +257,7 @@ Schedule TTL cleanup: `python scripts/prune_sessions.py` (30-day default). See *
 
 See **[widget/README.md](widget/README.md)** — local `widget/demo.html` only. See **[docs/WEBSITE_BOT.md](docs/WEBSITE_BOT.md)** for website embed + lead capture rollout.
 
-Production deploy notes: **[docs/PRODUCTION.md](docs/PRODUCTION.md)** (Docker, EC2, ECS, CORS, HubSpot). Enhancement roadmap: **[docs/enhancement_review.md](docs/enhancement_review.md)** (P0/P1 complete).
+Production deploy notes: **[docs/PRODUCTION.md](docs/PRODUCTION.md)** (Docker, EC2, ECS, CORS, HubSpot, Google Sheets/Chat). Enhancement roadmap: **[docs/enhancement_review.md](docs/enhancement_review.md)** (P0/P1 complete).
 
 ### 4. Evaluation
 
@@ -302,7 +308,7 @@ curl -s -X POST http://127.0.0.1:8001/api/v1/chat \
 | `expose_internal_sales_metadata` | No | Debug-only; honored only when server `EXPOSE_INTERNAL_SALES_METADATA=true` |
 | `session_id` | No | Omitted → server creates one; reuse for multi-turn + lead profile |
 | `conversation_history` | No | Prior `{role, content}` turns if not using server session store |
-| `lead_profile` | No | `name`, `email`, `company`, `project_need`, `timeline`, `budget_band` |
+| `lead_profile` | No | `name`, `email`, `company`, `role`, `industry`, `project_need`, `project_type`, `timeline`, `budget_band`, `decision_maker` |
 | `visitor_meta` | No | Passive fingerprint: `timezone`, `language`, `scroll_depth_pct`, UTM fields, `referrer` (widget sends on first chat) |
 | `stream` | No | Token streaming when enabled server-side |
 
@@ -313,8 +319,10 @@ curl -s -X POST http://127.0.0.1:8001/api/v1/chat \
 | `response` | Markdown answer (may include **Sources** links) |
 | `request_id` | Trace id included in structured API logs |
 | `intent` | `help` \| `sales` \| `booking` \| `general` |
-| `stage` | `null` by default; internal/debug only when explicitly enabled |
-| `lead_score` | `null` by default; internal/debug only when explicitly enabled |
+| `stage` | `null` by default; internal/debug only when `EXPOSE_INTERNAL_SALES_METADATA=true` |
+| `lead_score` | `null` by default; internal/debug only when `EXPOSE_INTERNAL_SALES_METADATA=true` |
+| `lead_bucket` | `hot` \| `warm` \| `cold`; same gate as `lead_score` (debug metadata) |
+| `cta_type` | Routing CTA: `instant_booking` \| `qualify` \| `human_handoff` \| `educate` |
 | `citations` | Retrieved mobcoder.ai chunks |
 | `suggested_replies` | Follow-up chip labels |
 | `show_human_escalation` | When true, widget may show “Talk to our team” |
@@ -365,10 +373,11 @@ flowchart LR
   E[validate_citations]
   F[append_qualification]
   G[build_final_response]
-  A --> B --> C --> D --> E --> F --> G
+  H[decide_routing in final]
+  A --> B --> C --> D --> E --> F --> G --> H
 ```
 
-After the response is sent, `post_response.py` runs **classify_intent** and **update_lead_profile** in a background thread (Phase 2 sales; regex-only profile in help mode).
+After the response is sent, `post_response.py` runs **classify_intent**, **update_lead_profile**, and **decide_routing** again on enriched state, then **persist_qualification** (session metadata, optional Google Sheets row, optional Google Chat alert). All of this runs in a background thread and does not block the visitor.
 
 Retrieval uses rule-based `retrieval_plan.py` (topic + `source_tier` filters) — no LLM before first token.
 
@@ -376,7 +385,10 @@ Retrieval uses rule-based `retrieval_plan.py` (topic + `source_tier` filters) �
 - **Sales** (Phase 2): project → timeline → budget → contact fields via `append_qualification`.
 - **Booking**: name, email, company; Calendly CTA when configured.
 - **Off-topic** queries with zero retrieval hits get a scope redirect after post-response classify.
+- **Routing** (`app/agent/routing.py`): `cta_type` and `needs_human_review` from lead score + intent; hot enterprise/value leads can trigger a one-time Google Chat alert.
 - **HubSpot**: async CRM webhook when a lead qualifies (`HUBSPOT_WEBHOOK_URL`); non-blocking.
+- **Google Sheets**: upsert consenting leads with email (`GOOGLE_SHEETS_WEBHOOK_URL`); see **[docs/GOOGLE_SHEETS_LEAD_LOG.md](docs/GOOGLE_SHEETS_LEAD_LOG.md)**.
+- **Google Chat**: one-time human-review alert per session (`GOOGLE_CHAT_WEBHOOK_URL`); see **[docs/GOOGLE_CHAT_LEAD_ALERTS.md](docs/GOOGLE_CHAT_LEAD_ALERTS.md)**.
 
 ## Architecture
 
@@ -398,10 +410,13 @@ flowchart TB
   CS -->|"qualified lead"| SUM[Summary]
   SUM --> CRM[Async CRM worker]
   CRM --> HS[HubSpot]
+  CS --> PostEnrich[post_response enrich + persist]
+  PostEnrich --> Sheets[Google Sheets]
+  PostEnrich --> GChat[Google Chat]
   CS --> EV[Analytics]
 ```
 
-**Chat hot path (streaming, default):** safety → retrieve → stream answer → validate. Intent/profile/CRM run **after** the response (background). CRM dispatch and analytics webhooks do not block the visitor.
+**Chat hot path (streaming, default):** safety → retrieve → stream answer → validate → qualify → final (with inline routing). Intent/profile/persistence/CRM run **after** the response (background). CRM, Sheets, Chat, and analytics webhooks do not block the visitor.
 
 **Knowledge & storage:**
 
@@ -416,13 +431,13 @@ flowchart TB
 ## Project layout
 
 ```text
-app/agent/          LangGraph nodes, retrieval_plan, post_response, intents, lead extraction
+app/agent/          LangGraph nodes, routing, retrieval_plan, post_response, lead_intelligence
 app/api/            FastAPI routes, chat service, attribution, history sanitization
 app/rag/            Retriever, embeddings, vector store, BM25, fusion, reranker
 app/crawler/        Scrape, chunk, deduplicate, page categories, source_tier
 app/sessions/       SQLite, Postgres, and Redis session stores
 app/infra/          Postgres pool, Redis client
-app/integrations/   HubSpot webhook, Apollo enrichment
+app/integrations/   HubSpot, Apollo, Google Sheets lead log, Google Chat alerts
 app/middleware/     Rate limiting
 app/observability/  Analytics events, OpenTelemetry tracing
 app/static/         admin.html (read-only ops portal at /admin)
@@ -433,7 +448,7 @@ deploy/terraform/   AWS VPC, RDS, Redis, EFS, ECS, ALB
 widget/             mobcoder-chat.js, demo.html, embed-snippet.html
 prompts/            System prompt for the sales assistant
 data/evals/         golden_questions.json, retrieval_queries.json
-docs/               PRODUCTION.md, DEVOPS_DEPLOY.md, AWS.md, EC2.md
+docs/               PRODUCTION.md, DEVOPS_DEPLOY.md, GOOGLE_SHEETS_LEAD_LOG.md, GOOGLE_CHAT_LEAD_ALERTS.md
 .env.pilot.example  Help-only pilot config (copy or merge for local/devapi)
 ```
 
@@ -458,6 +473,8 @@ docs/               PRODUCTION.md, DEVOPS_DEPLOY.md, AWS.md, EC2.md
 | `ENABLE_LLM_GROUNDING` | No | Validate answers against retrieved context; default `true` |
 | `GROUNDING_PROVIDER` | No | `heuristic` (default); `sovereign` is currently a stub that delegates to heuristic |
 | `HUBSPOT_WEBHOOK_URL` | No | Qualified lead webhook |
+| `GOOGLE_SHEETS_WEBHOOK_URL` | No | Apps Script URL for lead-log sheet upserts; see `docs/GOOGLE_SHEETS_LEAD_LOG.md` |
+| `GOOGLE_CHAT_WEBHOOK_URL` | No | Google Chat space webhook for one-time human-review alerts; see `docs/GOOGLE_CHAT_LEAD_ALERTS.md` |
 | `APOLLO_API_KEY` | No | Optional lead enrichment (email/company match) |
 | `APOLLO_IP_ENRICHMENT_ENABLED` | No | Async IP-to-company enrichment on new sessions; default `false` |
 | `INTERNAL_API_KEY` | No | Gates `GET /feedback`, `/feedback/stats`, `/leads`, and `/admin` data loads; unset = those endpoints return `404` |

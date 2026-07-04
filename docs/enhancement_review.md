@@ -1,6 +1,6 @@
 # MobCoder AI Sales Assistant — Deep Enhancement Review
 **Original review date:** June 2026  
-**Last updated:** June 2026 (post P0/P1 implementation)  
+**Last updated:** July 2026 (post P0/P1 + lead routing / Google integrations)  
 **Reviewer:** Senior AI Systems Architect / RAG Research Lead  
 **Scope:** Research review with implementation status tracked below  
 **Target Deployment:** https://mobcoder.ai/
@@ -38,11 +38,20 @@ This section reflects the **live codebase** as of the P0/P1 hardening pass. Use 
 | R16 | OpenTelemetry tracing | **Done** | `app/observability/tracing.py`; opt-in **`ENABLE_OTEL=false`**. Install OTEL packages separately (not in base `requirements.txt`). LangGraph nodes wrapped with spans. |
 | R17 | Redis rate limiter | **Done** | `RedisRateLimiterBackend` — sorted-set sliding window; `RATE_LIMIT_BACKEND=redis`. |
 
+### Lead routing & visibility (July 2026 — shipped)
+
+| ID | Item | Status | Notes |
+|----|------|--------|-------|
+| R31 | Lead routing (`decide_routing`) | **Done** | `app/agent/routing.py` — `cta_type`, `needs_human_review`, `human_review_summary`; recomputed in hot path + post-response. |
+| R32 | Google Sheets lead log | **Done** | `app/integrations/google_sheets.py`; consent + email gate; **[docs/GOOGLE_SHEETS_LEAD_LOG.md](GOOGLE_SHEETS_LEAD_LOG.md)**. |
+| R33 | Google Chat human-review alerts | **Done** | `app/integrations/google_chat.py`; one alert per session; **[docs/GOOGLE_CHAT_LEAD_ALERTS.md](GOOGLE_CHAT_LEAD_ALERTS.md)**. |
+| R34 | Routing regression tests | **Done** | `tests/test_qualification_routing.py`. |
+
 ### Verification (last gate run)
 
 | Gate | Result |
 |------|--------|
-| `pytest tests/` | Run before release (see CI) |
+| `pytest tests/` | Run before release (see CI); includes `tests/test_qualification_routing.py` |
 | `python3 scripts/run_eval.py --min-pass-rate 0.90` | 30/30 (100%) |
 | Staging smoke (`scripts/staging_smoke.py --live`) | Health + session/CRM paths OK with Redis + 2 replicas |
 
@@ -54,7 +63,7 @@ This section reflects the **live codebase** as of the P0/P1 hardening pass. Use 
 | R19 | Freshness-aware retrieval | P2 |
 | R20 | Contextual compression | P2 |
 | R21 | Inline citation footnotes | P2 |
-| R22 | Exit-intent auto-open (beyond badge) | P2 |
+| R22 | Exit-intent auto-open (beyond badge) | **Done** (verified July 2026 — `showExitOverlay()` in `mobcoder-chat.js`) |
 | R23 | Calendly booking webhook | P2 |
 | R24 | Page-specific response depth | P2 |
 | R25 | Budget band normalization | P2 |
@@ -262,7 +271,7 @@ The eval does not enforce a latency budget (e.g., "P95 response time < 4 seconds
 
 **Gap: Golden question set could expand project-type coverage**  
 File: `data/evals/golden_questions.json`  
-30 cases pass at 100%; add HIPAA/fintech/RAG-specific routing cases for regression on lead intelligence.
+30 cases pass at 100%; `tests/test_qualification_routing.py` covers hot-lead human-review routing. Add HIPAA/fintech/RAG-specific routing cases for further regression on lead intelligence.
 
 ### 3.7 Infrastructure / Security Gaps
 
@@ -460,6 +469,8 @@ The API and widget lack CSP, X-Frame-Options, and other security headers that ar
 ---
 
 ### R7 — Decision Role and Industry Fields
+
+> **Status: RESOLVED (R7)** — Shipped in `app/agent/lead_intelligence.py`, `LeadProfileInput`, HubSpot payload, and Google Sheets rows. Retained below as historical design notes.
 
 **Priority:** P1  
 **Problem:** `LeadProfileInput` has no `role` (CTO, CEO, PM, IT Director, Founder) or `industry` (fintech, healthcare, e-commerce, SaaS) fields. These are the two most important B2B lead enrichment dimensions for sales prioritization and routing.  

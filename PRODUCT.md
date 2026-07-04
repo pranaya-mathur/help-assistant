@@ -39,6 +39,8 @@ Every piece of feedback is stored and queryable. Negative ratings open a comment
 | Work across sessions | Postgres sessions in production (SQLite local, Redis optional for multi-instance tests) |
 | Rate limit abuse | Sliding window per IP, Redis-backed in prod |
 | Collect and store feedback | 👍/👎 with optional comment, queryable via `/admin` and internal API |
+| Route hot leads for human review | `app/agent/routing.py` — scoring + `cta_type`; optional Google Chat alert |
+| Log leads to a spreadsheet | Google Sheets via Apps Script (`GOOGLE_SHEETS_WEBHOOK_URL`) |
 | Deploy anywhere | Docker container, AWS-ready, single `<script>` widget embed |
 
 ---
@@ -62,6 +64,9 @@ Every piece of feedback is stored and queryable. Negative ratings open a comment
 
 - [ ] **Connect HubSpot (or your CRM)**
   Set `HUBSPOT_WEBHOOK_URL` in the env. When a lead is fully qualified, the agent fires a webhook — configure the URL for your environment.
+
+- [ ] **Optional: Google Sheets + Chat for lead visibility**
+  Set `GOOGLE_SHEETS_WEBHOOK_URL` for a live lead spreadsheet and `GOOGLE_CHAT_WEBHOOK_URL` for one-time hot-lead alerts. See `docs/GOOGLE_SHEETS_LEAD_LOG.md` and `docs/GOOGLE_CHAT_LEAD_ALERTS.md`.
 
 - [ ] **Confirm Redis persistence in your stack**
   Production Docker Compose and EC2 use `redis-server --appendonly yes`. Bare-metal Redis without AOF loses rate-limit state on restart (sessions live in Postgres in production).
