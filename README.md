@@ -2,6 +2,35 @@
 
 RAG-powered **Sales + Help** chatbot for [mobcoder.ai](https://mobcoder.ai/). It crawls official site content, embeds it in Chroma, and answers through a LangGraph agent exposed via **FastAPI** and an embeddable **website widget**.
 
+**Pilot (Phase 1):** Help-only via `OPERATING_MODE=help` — retrieve-first answers, no inline qualify on the hot path. See `.env.pilot.example`.
+
+**Phase 2 (default):** Full sales layer via `OPERATING_MODE=sales` or `full` — progressive qualification, lead scoring, CRM dispatch, Sheets/Chat alerts.
+
+## Features
+
+| Feature | How it works in this repo |
+|---------|---------------------------|
+| **Grounded answers** | RAG over crawled mobcoder.ai pages (Chroma vectors; optional BM25 + RRF hybrid, heuristic/Cohere/cross-encoder rerank, MMR diversity). Empty index falls back to bundled seed chunks (`app/rag/seed_fallback.py`). |
+| **Page-aware retrieval** | `page_url` / category bias via `retrieval_plan.py` and optional `PAGE_CONTEXT_BOOST_ENABLED` (default `true`). |
+| **Fast first token (streaming)** | Widget default: `POST /chat/stream` runs safety + retrieve before any LLM call; tokens stream via `stream_runner.py`. |
+| **Answer validation** | Heuristic LLM grounding (`ENABLE_LLM_GROUNDING`), citation checks, scope redirect when retrieval is empty. |
+| **Operating modes** | `help` — no inline qualify, help intent on hot path. `sales` / `full` — soft qualification questions, pricing CTAs, full lead layer. |
+| **Lead profiling (no form)** | Regex + incremental extract on every turn; LLM profile extract in `update_lead_profile` (sync on `POST /chat`, async after stream). |
+| **Lead scoring & routing** | Rule-based `compute_lead_scoring()` on the hot path; `decide_routing()` sets `cta_type` (`instant_booking`, `qualify`, `human_handoff`, `educate`). |
+| **Human escalation** | Frustration / “talk to a person” detection; widget form → `POST /escalate` → HubSpot (`source=human_escalation`). |
+| **Booking CTAs** | Calendly link when readiness + score thresholds met (`CALENDLY_URL`). |
+| **Suggested replies** | Heuristic chips + optional LLM chips (`LLM_SUGGESTED_REPLIES_ENABLED`, default `true`; disabled in pilot). |
+| **Sessions & attribution** | SQLite (local), Postgres (production), or Redis (multi-instance). Stores IP, UTM, timezone, scroll depth, page URLs in session metadata. |
+| **Analytics** | Client events (`POST /events`) and server events → stdout, optional Postgres (`PERSIST_ANALYTICS_EVENTS`), optional webhook. |
+| **Feedback** | Thumbs up/down + optional comment → Postgres/SQLite; stats via `/admin` or internal API (`INTERNAL_API_KEY`). |
+| **CRM & lead visibility** | Async HubSpot dispatch with conversation summary; Google Sheets upsert (consent + email); one-time Google Chat alert for hot human-review leads. |
+| **Apollo enrichment** | Optional email/company match on dispatch; optional async IP-to-company on new sessions. |
+| **Embeddable widget** | `mobcoder-chat.js` — SSE streaming, proactive auto-open (`MOBCODER_AUTO_OPEN_DELAY_SECONDS`), exit-intent badge, EU AI Act disclosure copy. |
+| **Ops portal** | Read-only `/admin` (feedback stats, feedback list, leads) — data calls require `X-Internal-Key`. |
+| **Production hardening** | Per-IP rate limits (memory or Redis), CORS allowlist, proxy-aware client IP, optional OpenTelemetry. |
+
+Product-oriented overview: **[PRODUCT.md](PRODUCT.md)**.
+
 ## System architecture
 
 ```mermaid
@@ -79,7 +108,7 @@ flowchart TB
 
 > Diagrams use [Mermaid](https://mermaid.js.org/) fences (` ```mermaid `). They render on GitHub and in editors with Mermaid support.
 
-> **Retrieve-first hot path.** Streaming (`POST /chat/stream`) and the LangGraph sync path run `safety_check → retrieve_sources → generate → validate → qualify → final`. `build_final_response` also runs rule-based lead scoring and `decide_routing` so the visitor sees the right CTA. Intent classification and lead profile LLM extraction run **after** the response via `app/agent/post_response.py` (Phase 2 sales), which recomputes routing and persists to session metadata, Google Sheets, and Google Chat when configured. Pilot help mode (`OPERATING_MODE=help`) skips qualify noise and profile LLM on the hot path.
+> **Retrieve-first hot path.** Both paths run `safety_check → retrieve_sources → generate → validate → qualify → build_final_response` with **rule-based** lead scoring and `decide_routing` so the visitor always gets a CTA on the hot path. **Streaming** (`POST /chat/stream`, widget default): LLM intent/profile enrichment runs **after** the response in a background thread (`dispatch_post_response_enrichment` → `enrich_state`). **Sync** (`POST /chat`): `run_agent()` calls `enrich_state` **before** returning, then persists Sheets/Chat alerts async (`dispatch_qualification_persistence`). Pilot help mode (`OPERATING_MODE=help`) skips inline qualify and forces help defaults on the hot path; LLM profile extraction runs only when `OPERATING_MODE` is `sales` or `full` and `ENABLE_LEAD_QUALIFICATION=true`.
 
 ## What it does
 
@@ -89,7 +118,7 @@ flowchart TB
 | **Sales** | Consult on projects, pricing, vendor comparison | “We need an AI support chatbot — can you help?” |
 | **Booking** | Schedule a discovery call | “I'd like to book a discovery call.” |
 
-The agent **always answers from retrieved mobcoder.ai sources first**. In **Phase 2 sales mode** (`OPERATING_MODE=sales` or `full`), it may append one soft qualification question after rapport. In **pilot help mode** (`OPERATING_MODE=help`), qualification is disabled on the hot path.
+The agent **always retrieves mobcoder.ai sources before answering** (with seed fallback if the vector store is empty). Default `OPERATING_MODE=full` enables the full sales layer. In **Phase 2** (`sales` or `full`), it may append one soft qualification question after rapport. In **pilot help mode** (`help`), inline qualification is disabled and help intent is pinned on the hot path.
 
 ## End-to-end workflow
 
@@ -134,29 +163,34 @@ Requires `APIFY_API_TOKEN` and `OPENAI_API_KEY`.
 # Discover sitemap URLs (optional audit)
 python scripts/discover_urls.py
 
-# Crawl all sitemap + seed URLs (88 sitemap URLs as seeds; the crawler follows
-# links too, so the actual yield is typically ~100+ pages — confirmed 101-102
-# in practice as of July 2026)
+# Crawl all sitemap + seed URLs (sitemap count varies; crawler also follows links)
 python scripts/crawl_mobcoder.py --use-sitemap --max-pages 500
 
 # Human-readable bundle (optional)
 python scripts/build_knowledge_md.py
 
-# Chunk, embed, load Chroma, and build the local BM25 lexical index
-# (use --reset-collection for a clean re-ingest)
+# Chunk, embed, load Chroma, merge supplemental JSON, build BM25 index
+# (use --reset-collection for a clean re-ingest; --skip-bm25 for vector-only)
 python scripts/ingest.py --reset-collection
 
 # Confirm coverage
 python scripts/discover_urls.py   # target: "Missing from last crawl: 0"
-# Known as of July 2026: a handful of pages (2-4) intermittently miss a given
-# crawl run due to Apify/Playwright timing, not a code bug — re-run if nonzero.
 ```
 
-Outputs (gitignored locally): `data/raw/`, `data/formatted/pages_latest.json`, `data/embeddings/chroma/`, `data/indexes/bm25_index.pkl`, `data/formatted/ingest_manifest.json`.
+**Ingest pipeline details:**
+
+- **404 / error pages** are dropped at load time (`app/crawler/page_loader.py`) so crawled error HTML never becomes chunks.
+- **Supplemental knowledge** in `data/formatted/supplemental/*.json` is merged during ingest (append into an existing URL or add as a new page). Shipped example: `mobcoder_ai_capabilities.json`.
+- **Crawl drift warnings** — ingest logs retrieval slug mismatches via `check_retrieval_slug_dependencies()`.
+- **Manifest** — `data/formatted/ingest_manifest.json` tracks `last_crawl_at`, `last_ingest_at`, chunk/page counts, BM25 path (preserves crawl fields across re-ingest).
+
+Last verified full re-ingest (July 2026): **~101 pages → ~257 chunks** after supplemental merge. A handful of sitemap URLs may intermittently miss a given Apify run — re-run crawl if `discover_urls.py` reports missing URLs.
+
+Outputs (gitignored locally): `data/raw/`, `data/formatted/pages_latest.json`, `data/chunks/chunks_*.json`, `data/embeddings/chroma/`, `data/indexes/bm25_index.pkl`, `data/formatted/ingest_manifest.json`.
 
 ### Hybrid retrieval
 
-Retrieval is vector-only by default. Hybrid retrieval can be enabled to combine existing Chroma semantic search with a lightweight local BM25 lexical index, then fuse candidates with Reciprocal Rank Fusion (RRF). This improves exact-term recall for terms such as HIPAA, SOC2, GDPR, Flutter, React Native, RAG, LangGraph, staff augmentation, healthcare, and fintech while preserving the vector path.
+Retrieval is **vector-only by default** (`HYBRID_RETRIEVAL_ENABLED=false`). When hybrid is enabled, Chroma semantic search is combined with a local BM25 index and fused with Reciprocal Rank Fusion (RRF), then reranked (`RERANKER_BACKEND=heuristic|cohere|cross_encoder`) and diversified with MMR. Optional LLM query rewrite (`QUERY_REWRITE_ENABLED=false` by default) runs before retrieval when enabled.
 
 Build or rebuild the BM25 index during ingestion:
 
@@ -255,9 +289,18 @@ Schedule TTL cleanup: `python scripts/prune_sessions.py` (30-day default). See *
 
 ### 3. Website widget
 
-See **[widget/README.md](widget/README.md)** — local `widget/demo.html` only. See **[docs/WEBSITE_BOT.md](docs/WEBSITE_BOT.md)** for website embed + lead capture rollout.
+See **[widget/README.md](widget/README.md)** — local `widget/demo.html`, `contact-us.html`, `pricing.html`. Production embed: **`mobcoder-chat.js`** via **`embed-snippet.html`**. Rollout: **[docs/WEBSITE_BOT.md](docs/WEBSITE_BOT.md)**.
 
-The widget discloses **“AI assistant”** in the header and openers (EU AI Act Art. 50(1)). Do not remove when customizing embeds.
+| Widget config | Purpose |
+|---------------|---------|
+| `MOBCODER_CHAT_API_URL` | Chat endpoint (auto-detected on mobcoder.ai / localhost when omitted) |
+| `MOBCODER_CHAT_STREAM` | SSE token streaming (default `true`) |
+| `MOBCODER_AUTO_OPEN_DELAY_SECONDS` | Proactive panel open on high-intent pages (default `45`, `0` = off) |
+| `MOBCODER_CALENDLY_URL` / `MOBCODER_CONTACT_URL` | Booking vs contact CTAs |
+| `MOBCODER_PRIVACY_COPY` | Lead-form consent text |
+| `MOBCODER_SHOW_DEBUG_SALES_STATE` | Debug metadata in UI (keep `false` in production) |
+
+The widget discloses **“AI assistant”** in the header and openers (EU AI Act Art. 50(1)). Do not remove when customizing embeds. Proactive auto-open and exit-intent are suppressed on `/contact-us`, when a lead is known, or after qualification.
 
 Production deploy notes: **[docs/PRODUCTION.md](docs/PRODUCTION.md)** (Docker, EC2, ECS, CORS, HubSpot, Google Sheets/Chat). Enhancement roadmap: **[docs/enhancement_review.md](docs/enhancement_review.md)** (P0/P1 complete).
 
@@ -280,7 +323,7 @@ Base path: `/api/v1`
 | `POST` | `/events` | Client analytics (widget funnel, UTM-attributed) |
 | `POST` | `/feedback` | Thumbs up/down (`rating`: `1` or `-1`) for a bot message |
 | `POST` | `/escalate` | Human escalation form → HubSpot (`source=human_escalation`) |
-| `GET` | `/widget-context` | Opener text + starter chips for widget (optional `page_url` query) |
+| `GET` | `/widget-context` | Opener text + starter chips for widget (`page_url` required; optional `page_title`) |
 | `GET` | `/sources` | Indexed source URLs; disabled in production unless `ENABLE_SOURCE_ENDPOINTS=true` |
 | `GET` | `/categories` | Page categories for retrieval bias; disabled in production unless `ENABLE_SOURCE_ENDPOINTS=true` |
 | `GET` | `/feedback` | Internal: list feedback records; requires `X-Internal-Key` when `INTERNAL_API_KEY` is set |
@@ -312,7 +355,7 @@ curl -s -X POST http://127.0.0.1:8001/api/v1/chat \
 | `conversation_history` | No | Prior `{role, content}` turns if not using server session store |
 | `lead_profile` | No | `name`, `email`, `company`, `role`, `industry`, `project_need`, `project_type`, `timeline`, `budget_band`, `decision_maker` |
 | `visitor_meta` | No | Passive fingerprint: `timezone`, `language`, `scroll_depth_pct`, UTM fields, `referrer` (widget sends on first chat) |
-| `stream` | No | Token streaming when enabled server-side |
+| `stream` | No | Request token streaming on `/chat/stream` when `ENABLE_CHAT_STREAMING=true` (widget sends `true`) |
 
 ### Chat response (high level)
 
@@ -364,33 +407,39 @@ curl -s http://127.0.0.1:8001/api/v1/feedback/stats \
 
 ## Agent pipeline
 
-Streaming (`POST /chat/stream`, default — `app/agent/stream_runner.py`) and sync (`app/agent/graph.py`) share the same **retrieve-first** order:
+**Streaming (widget default)** — `POST /chat/stream` with `stream: true` and `ENABLE_CHAT_STREAMING=true`:
 
 ```mermaid
 flowchart LR
   A[safety_check]
   B[retrieve_sources]
-  C[generate_answer / stream]
+  C[stream generate_answer]
   D[validate_grounding]
   E[validate_citations]
   F[append_qualification]
-  G[build_final_response]
-  H[decide_routing in final]
+  G[build_final_response + rule scoring + routing]
+  H[background enrich_state + persist]
   A --> B --> C --> D --> E --> F --> G --> H
 ```
 
-After the response is sent, `post_response.py` runs **classify_intent**, **update_lead_profile**, and **decide_routing** again on enriched state, then **persist_qualification** (session metadata, optional Google Sheets row, optional Google Chat alert). All of this runs in a background thread and does not block the visitor.
+**Sync** — `POST /chat` via LangGraph (`app/agent/graph.py`): same hot-path nodes plus `prepare_defaults` in help mode; `enrich_state` runs **synchronously** inside `run_agent()` before the JSON response; Sheets/Chat persistence runs in a background thread.
 
-Retrieval uses rule-based `retrieval_plan.py` (topic + `source_tier` filters) — no LLM before first token.
+After the visitor sees the response:
 
-- **Help pilot** (`OPERATING_MODE=help`): no inline qualify, no profile LLM on hot path.
-- **Sales** (Phase 2): project → timeline → budget → contact fields via `append_qualification`.
+- **Stream path:** `dispatch_post_response_enrichment` → `classify_intent`, `update_lead_profile`, recomputed `decide_routing`, `persist_qualification` (session metadata, Google Sheets, Google Chat).
+- **Sync path:** enrichment already applied; `dispatch_qualification_persistence` writes metadata and fires outbound alerts only.
+
+Retrieval uses rule-based `retrieval_plan.py` (topic + `source_tier` filters) — **no LLM before first token** on the streaming hot path.
+
+- **Help pilot** (`OPERATING_MODE=help`): no inline qualify; help intent/stage pinned on hot path; regex-only profile extract in enrichment (no profile LLM).
+- **Sales / full**: project → timeline → budget → contact fields via `append_qualification`.
 - **Booking**: name, email, company; Calendly CTA when configured.
-- **Off-topic** queries with zero retrieval hits get a scope redirect after post-response classify.
-- **Routing** (`app/agent/routing.py`): `cta_type` and `needs_human_review` from lead score + intent; hot enterprise/value leads can trigger a one-time Google Chat alert.
-- **HubSpot**: async CRM webhook when a lead qualifies (`HUBSPOT_WEBHOOK_URL`); non-blocking.
+- **Off-topic** queries with zero retrieval hits get a scope redirect after classify.
+- **Routing** (`app/agent/routing.py`): `cta_type` and `needs_human_review` from lead score + intent; hot enterprise/value leads can trigger a one-time Google Chat alert (requires `lead_consent`).
+- **HubSpot**: async CRM webhook when a lead qualifies (`HUBSPOT_WEBHOOK_URL`); includes `conversation_summary.py` excerpt; non-blocking.
 - **Google Sheets**: upsert consenting leads with email (`GOOGLE_SHEETS_WEBHOOK_URL`); see **[docs/GOOGLE_SHEETS_LEAD_LOG.md](docs/GOOGLE_SHEETS_LEAD_LOG.md)**.
 - **Google Chat**: one-time human-review alert per session (`GOOGLE_CHAT_WEBHOOK_URL`); see **[docs/GOOGLE_CHAT_LEAD_ALERTS.md](docs/GOOGLE_CHAT_LEAD_ALERTS.md)**.
+- **CRM dispatch** is triggered from `chat_service.py` when `ready_for_booking` / qualification thresholds are met — not on every turn.
 
 ## Architecture
 
@@ -418,15 +467,17 @@ flowchart TB
   CS --> EV[Analytics]
 ```
 
-**Chat hot path (streaming, default):** safety → retrieve → stream answer → validate → qualify → final (with inline routing). Intent/profile/persistence/CRM run **after** the response (background). CRM, Sheets, Chat, and analytics webhooks do not block the visitor.
+**Chat hot path (streaming, default):** safety → retrieve → stream answer → validate → qualify → final (with inline rule-based scoring + routing). LLM intent/profile enrichment and outbound persistence run **after** the response on the stream path; sync `/chat` enriches before return. CRM, Sheets, Chat, and analytics webhooks never block the visitor.
 
 **Knowledge & storage:**
 
-- **Apify** `website-content-crawler` → `data/raw/`
-- **Chunk + embed** → Chroma collection `mobcoder_sales`
+- **Apify** `website-content-crawler` → `data/raw/` (404/error pages filtered at load)
+- **Chunk + embed + supplemental merge** → Chroma collection `mobcoder_sales`
+- **Chunk snapshots** → `data/chunks/chunks_<timestamp>.json` (used by `/sources`)
 - **Sessions** → SQLite (local default), **PostgreSQL** (production: `SESSION_STORE_BACKEND=postgres`), or Redis (multi-instance smoke tests)
-- **Analytics / turns** → Postgres tables when `DATABASE_URL` + `PERSIST_ANALYTICS_EVENTS=true`
-- **FastAPI** and **widget** share the same retrieve-first agent logic (`stream_runner` for SSE; `graph.run_agent()` for sync)
+- **Analytics / turns / feedback** → Postgres tables when `DATABASE_URL` + `PERSIST_ANALYTICS_EVENTS=true`
+- **FastAPI** and **widget** share retrieve-first logic (`stream_runner` for SSE; `graph.run_agent()` for sync)
+- **First boot (Docker):** `AUTO_INGEST_ON_START=true` seeds knowledge when Chroma is empty (`scripts/docker_entrypoint.sh`)
 
 **Staging (Redis + 2 replicas):** see [docs/PRODUCTION.md](docs/PRODUCTION.md) and `docker-compose.staging.yml`.
 
@@ -435,8 +486,8 @@ flowchart TB
 ```text
 app/agent/          LangGraph nodes, routing, retrieval_plan, post_response, lead_intelligence
 app/api/            FastAPI routes, chat service, attribution, history sanitization
-app/rag/            Retriever, embeddings, vector store, BM25, fusion, reranker
-app/crawler/        Scrape, chunk, deduplicate, page categories, source_tier
+app/rag/            Retriever, embeddings, vector store, BM25, fusion, reranker, seed_fallback
+app/crawler/        Scrape, chunk, deduplicate, page categories, source_tier, 404 filtering
 app/sessions/       SQLite, Postgres, and Redis session stores
 app/infra/          Postgres pool, Redis client
 app/integrations/   HubSpot, Apollo, Google Sheets lead log, Google Chat alerts
@@ -450,8 +501,10 @@ deploy/terraform/   AWS VPC, RDS, Redis, EFS, ECS, ALB
 widget/             mobcoder-chat.js, demo.html, embed-snippet.html
 prompts/            System prompt for the sales assistant
 data/evals/         golden_questions.json, retrieval_queries.json
+data/formatted/supplemental/  Optional JSON knowledge merged at ingest
 docs/               PRODUCTION.md, DEVOPS_DEPLOY.md, GOOGLE_SHEETS_LEAD_LOG.md, GOOGLE_CHAT_LEAD_ALERTS.md
 .env.pilot.example  Help-only pilot config (copy or merge for local/devapi)
+PRODUCT.md          Product-facing feature summary
 ```
 
 ## Environment
@@ -462,6 +515,9 @@ docs/               PRODUCTION.md, DEVOPS_DEPLOY.md, GOOGLE_SHEETS_LEAD_LOG.md, 
 | `APIFY_API_TOKEN` | Crawl only | Apify website crawler |
 | `OPENAI_MODEL` | No | Default `gpt-5-mini` (GPT-5/o-series params handled automatically; legacy `gpt-4o-*` still supported) |
 | `OPENAI_EMBEDDING_MODEL` | No | Default `text-embedding-3-small` |
+| `RETRIEVAL_TOP_K` | No | Final chunks after rerank; default `8` |
+| `RETRIEVAL_CANDIDATE_K` | No | Initial retrieval pool before MMR/rerank; default `16` |
+| `RERANKER_TOP_K` | No | Chunks after reranker; default `4` |
 | `APP_ENV` | No | `development` (default) or `production`; gates docs/source/debug endpoints |
 | `AUTO_MIGRATE_DB` | No | Apply `db/migrations/` on startup when `DATABASE_URL` set; default `true` |
 | `POSTGRES_POOL_MIN_SIZE` | No | Postgres pool min connections; default `1` |
@@ -469,7 +525,10 @@ docs/               PRODUCTION.md, DEVOPS_DEPLOY.md, GOOGLE_SHEETS_LEAD_LOG.md, 
 | `CALENDLY_URL` | No | Booking link in CTAs |
 | `CONTACT_PAGE_URL` | No | Contact page link in escalation copy |
 | `BOOKING_CTA` | No | CTA label text |
-| `OPERATING_MODE` | No | `help` (pilot), `sales`, or `full` (default). Help disables qualify/profile LLM on hot path. See `.env.pilot.example`. |
+| `OPERATING_MODE` | No | `help` (pilot), `sales`, or `full` (default). Help disables inline qualify on hot path. See `.env.pilot.example`. |
+| `PAGE_CONTEXT_BOOST_ENABLED` | No | Boost retrieval for current page URL/category; default `true` (pilot sets `false`) |
+| `LLM_SUGGESTED_REPLIES_ENABLED` | No | LLM-generated follow-up chips; default `true` (pilot sets `false`) |
+| `TRUST_CLIENT_CONVERSATION_HISTORY` | No | Default `false` — server session history always wins over client-supplied `conversation_history` (anti-spoofing) |
 | `GROUNDING_REPLACE_ON_FAILURE` | No | Rewrite streamed answer when grounding fails; default `false` (log only) |
 | `ENABLE_LEAD_QUALIFICATION` | No | Soft qualify questions after rapport; default `true`; set `false` for help pilot |
 | `ENABLE_LLM_GROUNDING` | No | Validate answers against retrieved context; default `true` |
@@ -480,7 +539,8 @@ docs/               PRODUCTION.md, DEVOPS_DEPLOY.md, GOOGLE_SHEETS_LEAD_LOG.md, 
 | `APOLLO_API_KEY` | No | Optional lead enrichment (email/company match) |
 | `APOLLO_IP_ENRICHMENT_ENABLED` | No | Async IP-to-company enrichment on new sessions; default `false` |
 | `INTERNAL_API_KEY` | No | Gates `GET /feedback`, `/feedback/stats`, `/leads`, and `/admin` data loads; unset = those endpoints return `404` |
-| `ENABLE_CHAT_STREAMING` | No | SSE token stream on `/chat/stream` |
+| `ENABLE_CHAT_STREAMING` | No | SSE token stream on `/chat/stream`; default `true` |
+| `API_RELOAD` | No | Uvicorn reload in dev; default `false` in `.env.example` |
 | `ENABLE_DOCS` | No | Swagger UI; default off in production |
 | `ENABLE_SOURCE_ENDPOINTS` | No | `/sources` and `/categories`; default off in production |
 | `ENABLE_DEBUG_ENDPOINTS` | No | Debug routes; default off in production |
@@ -634,7 +694,9 @@ pytest tests/ -q
 ## TODO
 
 - [ ] **Admin portal v1** — extend MVP at `/admin` with session inbox, conversation detail, CRM dispatch log, and analytics summary. MVP today: feedback stats, feedback list, leads list. See **[docs/ADMIN_PORTAL.md](docs/ADMIN_PORTAL.md)**. Until then, use `/admin`, `python scripts/inspect_db.py`, `python scripts/inspect_crm.py`, or pgAdmin.
+- [ ] **Set `INTERNAL_API_KEY` in production** — without it, `/admin` data loads, `GET /feedback*`, and `GET /leads` return `404`.
+- [ ] **Embed widget on live mobcoder.ai** — see `widget/embed-snippet.html` and **[docs/WEBSITE_BOT.md](docs/WEBSITE_BOT.md)**.
 
 ## Repository
 
-https://gitlab.com/mobcoder-sales-agent/mobcoder.ai-agent
+https://github.com/pranaya-mathur/help-assistant
