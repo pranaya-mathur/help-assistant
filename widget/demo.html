@@ -417,7 +417,8 @@
       <div id="chat-agent-name">Mobcoder AI Assistant</div>
       <div id="chat-status">
         <div id="status-dot"></div>
-        Online · Replies instantly
+        <!-- EU AI Act Art. 50(1): AI disclosure visible from first exposure -->
+        Online · AI assistant — replies instantly
       </div>
     </div>
     <div id="chat-header-right">
@@ -1088,9 +1089,16 @@
     }
     renderSources(data.citations, bub);
     renderPills(data.stage, data.lead_score, col);
-    // Lead capture: inline qualify questions in chat only — no modal auto-popup.
-    // Users open the form manually via the header "Share details" button.
-    if (data.needs_contact_info) track("qualify_shown");
+    // Lead capture: when the server appends a qualify question it also sets
+    // needs_contact_info — surface the lead form once per session (mirrors
+    // mobcoder-chat.js), reusing the same guards as maybePromptForLead.
+    if (data.needs_contact_info) {
+      track("qualify_shown");
+      if (!sessionStorage.getItem("mc_lead_prompted")) {
+        sessionStorage.setItem("mc_lead_prompted", "1");
+        openLeadFormAuto({ question: data.profile_question || undefined });
+      }
+    }
     showSuggestions(data.suggested_replies);
     if (data.ready_for_booking && !getLead().email) {
       suppressProactive();

@@ -285,6 +285,29 @@ def _normalize_booking_links(answer: str, calendly_url: str) -> str:
     return answer
 
 
+# GPT-5 / o-series reasoning models reject the legacy sampling params: they
+# require `max_completion_tokens` (a budget that also covers hidden reasoning
+# tokens, hence the headroom) and only run at default temperature. GPT-5
+# additionally accepts reasoning_effort="minimal", which keeps latency close
+# to the non-reasoning models for this chat workload.
+_REASONING_MODEL_PREFIXES = ("gpt-5", "o1", "o3", "o4", "o5")
+_REASONING_TOKEN_HEADROOM = 512
+
+
+def _completion_params(*, max_tokens: int, temperature: float) -> dict[str, Any]:
+    model = get_settings().openai_model
+    lowered = model.lower()
+    if lowered.startswith(_REASONING_MODEL_PREFIXES):
+        params: dict[str, Any] = {
+            "model": model,
+            "max_completion_tokens": max_tokens + _REASONING_TOKEN_HEADROOM,
+        }
+        if lowered.startswith("gpt-5"):
+            params["reasoning_effort"] = "minimal"
+        return params
+    return {"model": model, "temperature": temperature, "max_tokens": max_tokens}
+
+
 @retry(
     retry=retry_if_exception_type(_RETRYABLE),
     stop=stop_after_attempt(3),
@@ -293,13 +316,10 @@ def _normalize_booking_links(answer: str, calendly_url: str) -> str:
     reraise=True,
 )
 def _llm_json(prompt: str) -> dict[str, Any]:
-    settings = get_settings()
     response = _get_llm().chat.completions.create(
-        model=settings.openai_model,
         messages=[{"role": "user", "content": prompt}],
-        temperature=0,
-        max_tokens=300,
         response_format={"type": "json_object"},
+        **_completion_params(max_tokens=300, temperature=0),
     )
     raw = response.choices[0].message.content or "{}"
     try:
@@ -316,24 +336,18 @@ def _llm_json(prompt: str) -> dict[str, Any]:
     reraise=True,
 )
 def _llm_text(messages: list[dict[str, str]], max_tokens: int = 600) -> str:
-    settings = get_settings()
     response = _get_llm().chat.completions.create(
-        model=settings.openai_model,
         messages=messages,
-        temperature=0.3,
-        max_tokens=max_tokens,
+        **_completion_params(max_tokens=max_tokens, temperature=0.3),
     )
     return response.choices[0].message.content or ""
 
 
 def _llm_text_stream(messages: list[dict[str, str]], max_tokens: int = 600) -> Iterator[str]:
-    settings = get_settings()
     stream = _get_llm().chat.completions.create(
-        model=settings.openai_model,
         messages=messages,
-        temperature=0.3,
-        max_tokens=max_tokens,
         stream=True,
+        **_completion_params(max_tokens=max_tokens, temperature=0.3),
     )
     for chunk in stream:
         delta = chunk.choices[0].delta.content if chunk.choices else None
@@ -633,7 +647,11 @@ def update_lead_profile(state: dict[str, Any]) -> dict[str, Any]:
         **state,
         "lead_profile": profile,
         "missing_fields": missing,
-        "needs_contact_info": False,
+        # This node now runs *after* append_qualification (post-response
+        # enrichment) — don't wipe the ask flag it set; only clear it when
+        # this turn's extraction just completed the contact capture.
+        "needs_contact_info": bool(state.get("needs_contact_info"))
+        and not has_contact_capture(profile),
         "ready_for_booking": is_lead_complete(profile, intent),
         "stage": stage,
         "lead_score": scoring["lead_score"],
@@ -646,7 +664,10 @@ def update_lead_profile(state: dict[str, Any]) -> dict[str, Any]:
 def append_qualification(state: dict[str, Any]) -> dict[str, Any]:
     """After the grounded answer, add Calendly CTA and/or one soft qualify question."""
     settings = get_settings()
-    intent = state.get("intent", "general")
+    # The hot path runs before post-response intent classification, so state
+    # intent is usually empty here — fall back to the prior turn's persisted
+    # intent so qualification doesn't dead-end on ""/"general".
+    intent = state.get("intent") or state.get("prior_intent") or "general"
     history = state.get("conversation_history")
     profile = state.get("lead_profile", {})
     answer = state.get("answer", "") or ""
@@ -744,7 +765,11 @@ def append_qualification(state: dict[str, Any]) -> dict[str, Any]:
             "profile_question": "",
         }
 
-    stage = state.get("stage", "")
+    # State carries stage="discover" on the hot path — the real stage is only
+    # computed by post-response enrichment and is not threaded back into the
+    # next turn's initial state, which left the qualify gate permanently shut.
+    # Recompute it here from intent/history/profile (pure rule logic, no LLM).
+    stage = compute_conversation_stage(intent, history, profile)
     if not should_append_qualification(intent, history, profile, stage=stage):
         return {
             **state,

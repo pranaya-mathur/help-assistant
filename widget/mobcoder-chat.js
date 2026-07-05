@@ -1036,7 +1036,9 @@
     var dot = document.createElement("div");
     dot.id = "mc-status-dot";
     subRow.appendChild(dot);
-    subRow.appendChild(document.createTextNode("Online · Replies instantly"));
+    /* "AI" kept in the always-visible header: EU AI Act Art. 50(1) disclosure
+       must appear no later than first interaction (in force 2026-08-02). */
+    subRow.appendChild(document.createTextNode("Online · AI assistant — replies instantly"));
     headerInfo.appendChild(headerName);
     headerInfo.appendChild(subRow);
 
@@ -1696,7 +1698,14 @@
         if (chips.indexOf("Talk to our team") < 0) chips.push("Talk to our team");
         showSuggestions(chips);
       }
-      if (data.needs_contact_info) track("qualify_shown");
+      if (data.needs_contact_info) {
+        /* Server appended a soft qualify question — surface the structured
+           lead form (with consent copy) alongside it. submitQualify() sets
+           lead_consent, which gates all CRM/Sheets/Chat dispatch server-side.
+           Typing a normal reply instead dismisses the form (see doSend). */
+        showQualifyForm(true);
+        track("qualify_shown");
+      }
     }
 
     async function doSend(overrideText) {

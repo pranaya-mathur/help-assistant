@@ -275,32 +275,38 @@ def starter_chips_for_category(page_category: str) -> list[str]:
 
 
 def contextual_opener(page_category: str) -> str:
-    """Static greeting when widget opens on a known page category."""
+    """Static greeting when widget opens on a known page category.
+
+    Every opener self-identifies as an AI assistant in the first sentence —
+    EU AI Act Art. 50(1) requires informing visitors they are interacting
+    with an AI at the start of the conversation (in force 2026-08-02).
+    """
+    disclosure = "Hi! I'm Mobcoder's AI assistant."
     openers = {
         "ai_agents": (
-            "Hi! You're on our AI page — I can explain agentic AI, chatbots, and how "
+            f"{disclosure} You're on our AI page — I can explain agentic AI, chatbots, and how "
             "Mobcoder AI builds production-grade systems. What would you like to explore?"
         ),
         "case_studies": (
-            "Hi! I can walk you through Mobcoder AI case studies and example projects. "
+            f"{disclosure} I can walk you through Mobcoder AI case studies and example projects. "
             "What industry or use case interests you?"
         ),
         "services": (
-            "Hi! I can help with Mobcoder AI services, engagement models, and how we partner "
+            f"{disclosure} I can help with Mobcoder AI services, engagement models, and how we partner "
             "on custom software. What are you looking for?"
         ),
         "pricing": (
-            "Hi! I can explain Mobcoder AI engagement models and how we price custom software "
+            f"{disclosure} I can explain Mobcoder AI engagement models and how we price custom software "
             "and AI work — or connect you with our team for a tailored quote."
         ),
         "about": (
-            "Hi! Ask me about Mobcoder AI's team, expertise, and how we work with clients."
+            f"{disclosure} Ask me about Mobcoder AI's team, expertise, and how we work with clients."
         ),
         "contact": (
-            "Hi! I can answer questions about Mobcoder AI or help you book a discovery call."
+            f"{disclosure} I can answer questions about Mobcoder AI or help you book a discovery call."
         ),
     }
     return openers.get(
         page_category,
-        "Hi! I can help with Mobcoder AI services, AI projects, and booking a discovery call.",
+        f"{disclosure} I can help with Mobcoder AI services, AI projects, and booking a discovery call.",
     )

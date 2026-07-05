@@ -458,7 +458,7 @@ docs/               PRODUCTION.md, DEVOPS_DEPLOY.md, GOOGLE_SHEETS_LEAD_LOG.md, 
 |----------|----------|-------------|
 | `OPENAI_API_KEY` | Yes (chat + ingest) | LLM and embeddings |
 | `APIFY_API_TOKEN` | Crawl only | Apify website crawler |
-| `OPENAI_MODEL` | No | Default `gpt-4o-mini` |
+| `OPENAI_MODEL` | No | Default `gpt-5-mini` (GPT-5/o-series params handled automatically; legacy `gpt-4o-*` still supported) |
 | `OPENAI_EMBEDDING_MODEL` | No | Default `text-embedding-3-small` |
 | `APP_ENV` | No | `development` (default) or `production`; gates docs/source/debug endpoints |
 | `AUTO_MIGRATE_DB` | No | Apply `db/migrations/` on startup when `DATABASE_URL` set; default `true` |

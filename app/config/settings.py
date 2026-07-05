@@ -10,7 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     apify_api_token: str = ""
     openai_api_key: Optional[str] = None
-    openai_model: str = "gpt-4o-mini"
+    openai_model: str = "gpt-5-mini"
     openai_embedding_model: str = "text-embedding-3-small"
 
     vector_db_type: str = "chroma"
