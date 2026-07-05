@@ -39,6 +39,7 @@ Every piece of feedback is stored and queryable. Negative ratings open a comment
 | Work across sessions | Postgres sessions in production (SQLite local, Redis optional for multi-instance tests) |
 | Rate limit abuse | Sliding window per IP, Redis-backed in prod |
 | Collect and store feedback | 👍/👎 with optional comment, queryable via `/admin` and internal API |
+| Disclose AI identity to visitors | Header + openers say “AI assistant” (EU AI Act Art. 50(1); see `docs/WEBSITE_BOT.md`) |
 | Route hot leads for human review | `app/agent/routing.py` — scoring + `cta_type`; optional Google Chat alert |
 | Log leads to a spreadsheet | Google Sheets via Apps Script (`GOOGLE_SHEETS_WEBHOOK_URL`) |
 | Deploy anywhere | Docker container, AWS-ready, single `<script>` widget embed |

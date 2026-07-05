@@ -69,9 +69,9 @@ Hybrid retrieval is optional and feature-flagged. When `HYBRID_RETRIEVAL_ENABLED
 
 Environment:
 
-| Variable | Recommended staging | Recommended production | Notes |
-|----------|---------------------|------------------------|-------|
-| `HYBRID_RETRIEVAL_ENABLED` | `true` for pilot (see `.env.pilot.example`) | `false` until live eval shows lift | Run `python scripts/eval_retrieval.py` before enabling; set `false` for vector-only rollback |
+| Variable | Recommended staging / pilot | Recommended production | Notes |
+|----------|-----------------------------|------------------------|-------|
+| `HYBRID_RETRIEVAL_ENABLED` | `false` (pilot default in `.env.devops.example`, `.env.pilot.example`) | `false` until live eval shows lift | Run `python scripts/eval_retrieval.py` before enabling; set `true` only with evidence |
 | `HYBRID_FAIL_OPEN` | `true` | `true` initially | Missing/corrupt BM25 index falls back to vector-only |
 | `BM25_INDEX_PATH` | `./data/indexes/bm25_index.pkl` | persistent volume path | Rebuilt by `python scripts/ingest.py` |
 | `BM25_TOP_K` | `20` | `20` | Lexical candidates before fusion |
@@ -303,6 +303,7 @@ The eval runner preflights `OPENAI_API_KEY`, eval dataset existence, and non-emp
 ## Staging checklist
 
 - Set `APP_ENV=production`, `OPENAI_API_KEY`, `CORS_ALLOWED_ORIGINS`, `CHROMA_PERSIST_DIR`.
+- **Pilot stack** (`.env.staging.example`, `.env.devops.example`): `OPERATING_MODE=help`, `ENABLE_LEAD_QUALIFICATION=false`, `HYBRID_RETRIEVAL_ENABLED=false`.
 - Single instance: `SESSION_STORE_BACKEND=sqlite`, `RATE_LIMIT_BACKEND=memory`.
 - Multi-instance staging: `SESSION_STORE_BACKEND=redis`, `RATE_LIMIT_BACKEND=redis`, `REDIS_URL=...`.
 - Keep `HYBRID_RETRIEVAL_ENABLED=false`, `EXPOSE_INTERNAL_SALES_METADATA=false`.

@@ -204,11 +204,15 @@ Both require visitor **email** + **`lead_consent`**. Unset → silently disabled
 ## 7. Go-live checklist
 
 - [ ] `.env.production` on EC2 with real `OPENAI_API_KEY` (and `APIFY_API_TOKEN` for crawl)
+- [ ] **Phase 1 pilot flags:** `OPERATING_MODE=help`, `ENABLE_LEAD_QUALIFICATION=false` (defaults in `.env.devops.example`)
+- [ ] `OPENAI_MODEL=gpt-5-mini` on API
+- [ ] `INTERNAL_API_KEY` set — `/admin`, `GET /feedback*`, and `GET /leads` enabled for QA/ops
+- [ ] `HYBRID_RETRIEVAL_ENABLED=false` (vector-only until `scripts/eval_retrieval.py` shows lift)
 - [ ] `CORS_ALLOWED_ORIGINS` includes widget origin (`devweb-agent.mobcoder.ai`)
 - [ ] IAM instance profile for ECR pull on EC2
 - [ ] GitHub secrets configured; `deploy-ec2` workflow green
 - [ ] `GET /api/v1/health` → `vector_store_count > 0`, recent `last_ingest_at`
-- [ ] Widget deployed (`deploy_widget_dev` or GitLab pipeline)
+- [ ] Widget deployed (`deploy_widget_dev` or GitLab pipeline) — verify **“AI assistant”** in header
 - [ ] Chat works end-to-end from widget URL
 - [ ] `AUTO_INGEST_ON_START=false` after first successful full ingest
 - [ ] HTTPS in front of API (ALB, nginx, or Cloudflare); `TRUST_PROXY_HEADERS=true`

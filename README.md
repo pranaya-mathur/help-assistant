@@ -257,6 +257,8 @@ Schedule TTL cleanup: `python scripts/prune_sessions.py` (30-day default). See *
 
 See **[widget/README.md](widget/README.md)** — local `widget/demo.html` only. See **[docs/WEBSITE_BOT.md](docs/WEBSITE_BOT.md)** for website embed + lead capture rollout.
 
+The widget discloses **“AI assistant”** in the header and openers (EU AI Act Art. 50(1)). Do not remove when customizing embeds.
+
 Production deploy notes: **[docs/PRODUCTION.md](docs/PRODUCTION.md)** (Docker, EC2, ECS, CORS, HubSpot, Google Sheets/Chat). Enhancement roadmap: **[docs/enhancement_review.md](docs/enhancement_review.md)** (P0/P1 complete).
 
 ### 4. Evaluation

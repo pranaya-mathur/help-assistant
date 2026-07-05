@@ -444,7 +444,7 @@ The API and widget lack CSP, X-Frame-Options, and other security headers that ar
 **Why it matters:** Sales reps need conversation context to have a warm follow-up call. A 3-sentence summary of the conversation intent, key questions asked, and stated project goals turns a cold database lead into an actionable handoff.  
 **Code areas impacted:** `app/api/chat_service.py` (`_emit_post_chat_analytics`), `app/sessions/store.py` (optionally store running summary), `app/integrations/hubspot.py`.  
 **Implementation approach:**  
-1. After `ready_for_booking` is true, generate a 2–3 sentence conversation summary using a lightweight LLM call (`gpt-4o-mini`, ~$0.0002): "Visitor is exploring [project_type] for [company]. Key questions: [X, Y]. Budget: [Z]. Urgency: [T]."
+1. After `ready_for_booking` is true, generate a 2–3 sentence conversation summary using a lightweight LLM call (`gpt-5-mini`, ~$0.0002): "Visitor is exploring [project_type] for [company]. Key questions: [X, Y]. Budget: [Z]. Urgency: [T]."
 2. Store summary in session metadata.
 3. Include in HubSpot payload as `conversation_summary`.  
 **Acceptance criteria:** When a lead is qualified (ready_for_booking=True), the HubSpot webhook payload includes a non-null conversation_summary field ≥ 50 characters.  

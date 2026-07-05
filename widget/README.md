@@ -67,6 +67,10 @@ Override anytime with `window.MOBCODER_CHAT_API_URL`.
 - `/contact-us` pages skip proactive auto-open and exit-intent (site already has form + calendar).
 - Book banner dismiss is persisted in `localStorage` (`mc_dismiss_book_banner`).
 
+## AI transparency (EU AI Act)
+
+The widget header shows **“Online · AI assistant — replies instantly”** and category openers begin with **“Hi! I'm Mobcoder's AI assistant.”** (EU AI Act Art. 50(1), in force 2026-08-02). Keep these when customizing `MOBCODER_AGENT_NAME` or embed copy. Details: **[docs/WEBSITE_BOT.md](../docs/WEBSITE_BOT.md)** §5.
+
 ## Two widget surfaces
 
 | File | Use |

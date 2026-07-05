@@ -17,23 +17,43 @@ Not required for v1 launch: HubSpot, Apollo, full admin portal (minimal **`/admi
 
 ## 1. API (backend)
 
-Ensure the API is running with at least:
+### Phase 1 pilot (help-only)
+
+Use **`.env.devops.example`** on EC2 (or **`.env.pilot.example`** locally). Minimum:
 
 ```bash
 OPENAI_API_KEY=...
+OPENAI_MODEL=gpt-5-mini
+OPERATING_MODE=help
+ENABLE_LEAD_QUALIFICATION=false
 SESSION_STORE_BACKEND=postgres
 DATABASE_URL=postgresql://...
 AUTO_MIGRATE_DB=true
 PERSIST_ANALYTICS_EVENTS=true
-ENABLE_LEAD_QUALIFICATION=true
 ENABLE_LLM_GROUNDING=true
 ENABLE_CHAT_STREAMING=true
+HYBRID_RETRIEVAL_ENABLED=false
 CALENDLY_URL=https://calendly.com/hello-mobcoder/mobcoderai
 CONTACT_PAGE_URL=https://mobcoder.ai/contact-us
 CORS_ALLOWED_ORIGINS=https://mobcoder.ai,https://www.mobcoder.ai,https://devweb-agent.mobcoder.ai
+# Required for /admin, feedback, and leads visibility:
+INTERNAL_API_KEY=...   # python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+In help mode the bot answers from RAG only — no inline qualify questions. Visitors can still share details manually via the widget **Share details** button.
+
+### Phase 2 (full sales layer)
+
+When moving beyond the pilot, set `OPERATING_MODE=full` (or `sales`) and `ENABLE_LEAD_QUALIFICATION=true`. See **`.env.production.example`**.
+
+```bash
+# Additional Phase 2 flags (on top of pilot stack)
+OPERATING_MODE=full
+ENABLE_LEAD_QUALIFICATION=true
 # Optional — see docs/GOOGLE_SHEETS_LEAD_LOG.md and docs/GOOGLE_CHAT_LEAD_ALERTS.md
 # GOOGLE_SHEETS_WEBHOOK_URL=
 # GOOGLE_CHAT_WEBHOOK_URL=
+# HUBSPOT_WEBHOOK_URL=
 ```
 
 **Pilot API:** `https://devapi-chatbot.mobcoder.ai`  
@@ -76,26 +96,49 @@ export WIDGET_S3_BUCKET=your-bucket AWS_REGION=us-east-1
 
 ## 3. Lead capture flow
 
+**Phase 1 pilot (`OPERATING_MODE=help`):**
+
 1. Visitor chats → bot answers from crawled mobcoder.ai content.
-2. After rapport, bot may ask for **name + email** (help) or **project → timeline → budget → contact** (sales).
-3. Widget qualify form saves `lead_profile` to localStorage + server session.
-4. Leads visible in Postgres:
+2. No automatic qualify questions on the hot path.
+3. Visitor may open **Share details** manually; form saves `lead_profile` to localStorage + server session.
+4. Leads visible in Postgres and via `/admin` when `INTERNAL_API_KEY` is set.
+
+**Phase 2 (`OPERATING_MODE=full`):**
+
+1. After rapport, bot may ask for **name + email** (help intent) or **project → timeline → budget → contact** (sales).
+2. Widget qualify form appears when the server sets `needs_contact_info`.
+3. Optional: set `HUBSPOT_WEBHOOK_URL` to push qualified leads to CRM.
+
+Inspect sessions:
 
 ```bash
 python scripts/inspect_db.py
 ```
 
-5. Optional: set `HUBSPOT_WEBHOOK_URL` to push qualified leads to CRM.
-
 ## 4. Pre-launch checklist
 
+- [ ] `OPERATING_MODE=help` and `ENABLE_LEAD_QUALIFICATION=false` on pilot API
+- [ ] `OPENAI_MODEL=gpt-5-mini` (or compatible model) set on API
+- [ ] `INTERNAL_API_KEY` set — `/admin` and feedback/leads endpoints work
+- [ ] Widget header shows **“AI assistant”** (EU AI Act Art. 50(1) disclosure — in force 2026-08-02)
 - [ ] `GET /api/v1/health` → `vector_store_count > 0`
 - [ ] `python scripts/qa_website_bot.py --live` passes
 - [ ] CORS allows `https://mobcoder.ai` and `https://www.mobcoder.ai`
 - [ ] Widget loads on mobile + desktop
 - [ ] “Book a call” → Calendly; “Contact us” → `/contact-us`
-- [ ] Test path: question → answer → share name/email → see session in DB
+- [ ] Test path (pilot): question → answer → manual Share details → see session in DB
 - [ ] Proactive popups suppressed on `/contact-us` and after lead captured
+
+## 5. AI transparency (EU AI Act)
+
+The widget must inform visitors they are interacting with an AI **before or at the start of** the conversation (EU AI Act Art. 50(1), in force 2026-08-02). This is implemented in:
+
+| Surface | Disclosure |
+|---------|------------|
+| Widget header | `Online · AI assistant — replies instantly` (`mobcoder-chat.js`, `demo.html`) |
+| Category openers | First sentence: “Hi! I'm Mobcoder's AI assistant.” (`app/agent/suggested_replies.py`) |
+
+Do not remove or hide these strings when customizing the widget.
 
 ## 6. Context-aware behavior
 
