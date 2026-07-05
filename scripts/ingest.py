@@ -181,6 +181,18 @@ def main() -> None:
         bm25_indexed = bm25_index.doc_count
         logger.info("BM25 index ready at %s (%d documents)", bm25_index_path, bm25_indexed)
 
+    _MANIFEST_KEYS = (
+        "last_crawl_at",
+        "pages_crawled",
+        "last_ingest_at",
+        "chunks",
+        "ingested_new",
+        "pages",
+        "snapshot",
+        "input",
+        "bm25_index_path",
+        "bm25_indexed",
+    )
     manifest_path = Path(settings.ingest_manifest_path)
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest: dict = {}
@@ -199,6 +211,7 @@ def main() -> None:
         "bm25_index_path": bm25_index_path if not args.skip_bm25 else "",
         "bm25_indexed": bm25_indexed,
     })
+    manifest = {key: manifest[key] for key in _MANIFEST_KEYS if key in manifest}
     with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2)
 
